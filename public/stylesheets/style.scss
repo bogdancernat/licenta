@@ -1,0 +1,50 @@
+@import "variables";
+@import "mixins";
+@import "fonts";
+
+@import "../../bower_components/normalize.scss/normalize";
+@import "../../bower_components/bourbon/app/assets/stylesheets/bourbon";
+@import "../../bower_components/neat/app/assets/stylesheets/neat";
+
+// import ion icons
+
+@import "_variables-ionicons";
+@import "../../bower_components/ionicons/scss/ionicons-variables";
+@import "../../bower_components/ionicons/scss/ionicons-font";
+@import "../../bower_components/ionicons/scss/ionicons-icons";
+
+@import "_partials/typography";
+@import "_partials/container";
+@import "_partials/inputs";
+@import "_partials/spinner";
+@import "_partials/button";
+@import "_partials/box";
+@import "_partials/icons";
+
+
+@import "_pages/homepage";
+@import "_pages/room";
+// @import "_pages/contact";
+// @import "_pages/feedback";
+// @import "_pages/auth";
+// @import "_pages/event-page";
+// @import "_pages/search-results";
+// @import "_pages/my-events";
+// @import "_pages/my-account";
+
+// @import "body-states";
+
+body {
+  // font-family: $font-default;
+  font-family: $font-mono;
+  font-weight: 300;
+  background-image: url('../images/noisy_net.png');
+  color: #fff;
+}
+
+hr {
+  margin: 0 auto;
+  border: 0;
+  height: 1px;
+  background-color: shade($slate, 10%);
+}

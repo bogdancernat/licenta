@@ -1,0 +1,7 @@
+.container {
+  width: 100%;
+  @include outer-container($max-container-width);
+  // padding: 1em 1em 10em 1em;
+  min-height: 100vh;
+  position: relative;
+}

@@ -1,0 +1,75 @@
+textarea:hover,
+input:hover,
+textarea:active,
+input:active,
+textarea:focus,
+input:focus,
+button:focus,
+button:active,
+button:hover
+{
+  outline: 0px !important;
+  -webkit-appearance: none;
+}
+
+
+input[disabled="disabled"] {
+}
+
+.big-input {
+  background-color: transparent;
+  border-width: 0 0 2px 0;
+  border-style: solid;
+  border-color: $blue;
+  padding: 0 0.8em;
+  color: #fff;
+  font-size: 1.4em;
+  font-weight: 300;
+  height: $big-input-height;
+  width: 100%;
+  text-align: center;
+  font-family: $font-mono;
+
+  @include transition(all 0.4s ease-in-out);
+
+  &:focus {
+    border-color: $yellow;
+  }
+
+  &[disabled="disabled"] {
+    background: rgba(255, 255, 255, 0.2);
+    color: shade(#ffffff, 10%);
+    border-color: $brown;
+  }
+}
+
+.input-group {
+  margin-bottom: 3px;
+
+  label {
+    font-family: $font-mono;
+    text-transform: uppercase;
+    font-size: 0.7em;
+  }
+
+  .error-label {
+    text-transform: uppercase;
+    font-size: 0.7em;
+    font-weight: 400;
+    color: $error-color;
+  }
+
+  .message-label {
+    text-transform: uppercase;
+    font-size: 0.7em;
+    font-weight: 400;
+    color: $info-color;
+  }
+
+  &.has-error {
+    input {
+      border-color: $error-color;
+      color: lighten($error-color, 20%);
+    }
+  }
+}

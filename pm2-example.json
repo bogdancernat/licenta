@@ -1,0 +1,13 @@
+{
+  "name": "bounce",
+  "env": {
+    "NODE_ENV": "development",
+    "PORT": 3000
+  },
+  "script": "bin/www",
+  "watch": ["app.js", "bin", "routes", "controllers", "config.js"],
+  "ignore_watch" : ["node_modules", "public", "bower_components"],
+  "watch_options": {
+    "followSymlinks": false
+  }
+}

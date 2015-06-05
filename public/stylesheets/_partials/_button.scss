@@ -1,0 +1,28 @@
+.btn {
+  border: none;
+  display: block;
+  width: 100%;
+  height: $btn-height;
+  text-transform: uppercase;
+
+  @include transition(all 0.4s ease-in-out);
+  &--primary {
+    color: #fff;
+    background: $blue;
+    border: 1px solid lighten($blue, 5%);
+
+    &:hover {
+      border-color: lighten($blue, 20%);
+      background: lighten($blue, 10%);
+    }
+
+    &:active {
+      border-color: lighten($orange, 20%);
+      background: lighten($orange, 10%);
+    }
+  }
+}
+
+.button-group {
+  margin: 5px auto;
+}

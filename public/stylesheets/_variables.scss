@@ -1,0 +1,35 @@
+// normalize uses this
+$browser-minimum-versions: (
+  'chrome':  null,
+  'firefox': null,
+  'ie':      '9',
+  'safari':  null,
+  'opera':   null
+) !default;
+
+
+$max-container-width: 100%;
+
+$blue: #00A0B0;
+$brown: #6A4A3C;
+$red: #CC333F;
+$orange: #EB6841;
+$yellow: #EDC951;
+$green: #C7F464;
+$slate: #556270;
+
+
+$error-color: lighten($red, 10%);
+$info-color: lighten($blue, 10%);
+$text-dark: #556270;
+
+// inputs
+$big-input-height: 40px;
+
+$btn-height: 38px;
+
+$font-default: 'Droid Sans';
+$font-mono: 'Aaargh';
+
+$self-color: desaturate($green, 15%);
+$receiver-color: $blue;

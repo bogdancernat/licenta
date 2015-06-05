@@ -1,0 +1,5 @@
+node_modules
+bower_components
+public/.sass-cache
+pm2.json
+config.js
