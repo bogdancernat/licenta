@@ -1,0 +1,12 @@
+<div class="box box--setup" ng-if="showAliasSelection">
+  <h2 class="title title--centered">Alias</h2>
+
+  <div class="input-group" ng-class="{'has-error': aliasError}">
+    <input type="text" class="big-input" id="alias" ng-model="alias" ng-trim="true" ng-pattern="/[a-zA-Z0-9]+/" ng-disabled="aliasDisabled">
+    <span class="error-label" ng-bind="aliasError" ng-if="aliasError"></span>
+  </div>
+
+  <div class="button-group">
+    <button class="btn btn--primary" ng-click="takeAlias()">Next</button>
+  </div>
+</div>

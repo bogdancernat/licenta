@@ -9,23 +9,24 @@
  */
 
 angular.module('bounceApp')
-  .controller('RoomController', function ($scope, $location, $routeParams, $socket, appData) {
-
-    $socket.emit('check-room', {room: $routeParams.room_name});
-
-    $socket.on('check-room:response', function (data) {
-      console.log(data);
-    });
-
-    $socket.on('get-alias:response', function (data) {
-      console.log(data);
-    });
-
-    // $socket.on('')
-    if (!appData.getRoom()) {
-      appData.setRoom();
+  .controller('RoomController', function ($scope, $location, $routeParams, $socket, $localStorage, videoStreaming) {
+    if (!$localStorage.room.input) {
+      $localStorage.room.input = $routeParams.room_name;
     }
-    // if (!appData.getAlias() || !appData.getRoom()) {
-    //   $location.path('/');
-    // }
+
+    if (!$localStorage.room.registered && $localStorage.alias.registered) {
+      $scope.enterRoom();
+    }
+
+    $socket.on('peer-connected', function (data) {
+      console.log(data);
+      if (data.peersInRoom) {
+        $localStorage.room.peersInRoom = data.peersInRoom;
+      }
+    });
+
+    $socket.on('peer-disconnected', function (data) {
+      videoStreaming.stopOwnVideo();
+    });
+
   });

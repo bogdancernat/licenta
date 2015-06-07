@@ -9,5 +9,23 @@
  */
 
 angular.module('bounceApp')
-  .controller('ChatController', function ($scope, $routeParams, $location, $socket, appData) {
+  .controller('ChatController', function ($scope, $routeParams, $location, $socket, $localStorage) {
+    $scope.chatMessage = null;
+    $scope.messages = [];
+
+    $scope.sendMessage = function () {
+      $socket.emit('new-message', {
+        text: this.chatMessage,
+        alias: $localStorage.alias.registered,
+        room: $localStorage.room.registered,
+        time: (new Date).getTime()
+      });
+
+      this.chatMessage = null;
+    };
+
+    $socket.on('new-message', function (message) {
+      $scope.messages.push(message);
+    });
+
   });

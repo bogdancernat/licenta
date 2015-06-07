@@ -1,15 +1,101 @@
-<!-- <i class="ion-icon ion-camera"></i> -->
+<nav class="main-nav" ng-if="$storage.alias.registered" ng-controller="NavController">
+  <div class="main-nav__user" ng-click="toggleMenu()">Hello, {{$storage.alias.registered}} <i class="ion-navicon"></i></div>
 
-<div class="box box--setup" ng-if="!aliasRegistered">
-  <h2 class="title title--centered">Identity</h2>
+  <ul class="main-nav__menu" ng-class="{'main-nav__menu--open': menuIsOpen}">
+    <li ng-click="killAlias()">Kill Alias</li>
+    <li ng-click="leaveRoom()" ng-if="$storage.room.registered">Leave Room</li>
+  </ul>
+</nav>
 
-  <div class="input-group" ng-class="{'has-error': aliasError}">
-    <label for="alias">Alias</label>
-    <input type="text" class="big-input" id="alias" ng-model="alias" ng-disabled="aliasDisabled">
-    <span class="error-label" ng-bind="aliasError" ng-if="aliasError"></span>
+<div class="container container--room" ng-if="$storage.room.peersInRoom.length > 1">
+  <div class="peer-sides" ng-controller="PeerPanelController">
+    <div class="peer-side peer-side--left peer-side--self">
+      <div class="portrait">
+        <canvas class="" id="self-video" autoplay="true"></canvas>
+      </div>
+      <div class="audio-video-buttons">
+        <button ng-click="toggleVideo('self')" ng-class="{active: self.videoActive}"><i class="ion-ios-videocam"></i></button>
+        <button ng-click="toggleAudio('self')" ng-class="{active: self.audioActive}"><i class="ion-mic-a"></i></button>
+      </div>
+
+      <hr>
+
+      <div class="file-sharing-dropzone"></div>
+    </div>
+
+    <div class="peer-side peer-side--right peer-side--receiver">
+      <div class="portrait">
+        <canvas class="" id="receiver-video"></canvas>
+      </div>
+      <div class="audio-video-buttons">
+        <button ng-click="toggleVideo('receiver')" ng-class="{active: receiver.videoActive, muted: receiver.videoMuted}"><i class="ion-ios-videocam"></i></button>
+        <button ng-click="toggleAudio('receiver')" ng-class="{active: receiver.audioActive, muted: receiver.audioMuted}"><i class="ion-mic-a"></i></button>
+      </div>
+
+      <hr>
+
+    </div>
+  </div>
+
+  <div ng-controller="ChatController" class="chat-window">
+    <div class="chat-window__messages">
+      <div class="chat-window__messages__lines">
+        <div class="chat-window__messages__line" ng-repeat="message in messages" ng-class="{'chat-window__messages__line--receiver': message.alias !== $storage.alias.registered, 'chat-window__messages__line--self': message.alias === $storage.alias.registered}">
+          <div class="chat-window__messages__line__alias">{{message.alias}}</div>
+          <div class="chat-window__messages__line__timestamp" am-time-ago="message.time"></div>
+          <div class="chat-window__messages__line__message">{{message.text}}</div>
+        </div>
+      </div>
+    </div>
+    <div class="chat-window__input">
+      <textarea id="" ng-model="chatMessage" ng-enter="sendMessage()"></textarea>
+      <button ng-enter="sendMessage()"><i class="ion-paper-airplane"></i></button>
+    </div>
+  </div>
+</div>
+
+<div class="box box--setup waiting-connection" ng-if="$storage.room.peersInRoom.length === 1">
+  <h4 class="title title--centered">Waiting for someone to connect.</h4>
+  <div class="spinner">
+    <div class="spinner__rect spinner__rect--1"></div>
+    <div class="spinner__rect spinner__rect--2"></div>
+    <div class="spinner__rect spinner__rect--3"></div>
+    <div class="spinner__rect spinner__rect--4"></div>
+    <div class="spinner__rect spinner__rect--5"></div>
+  </div>
+</div>
+
+<div class="box box--setup" ng-if="!$storage.alias.registered">
+  <h2 class="title title--centered">Alias</h2>
+
+  <div class="input-group" ng-class="{'has-error': $storage.alias.error}">
+    <input type="text" class="big-input" id="alias" ng-model="$storage.alias.input" ng-trim="true" ng-pattern="/[a-zA-Z0-9]+/" ng-disabled="$storage.alias.disabled">
+    <span class="error-label" ng-bind="$storage.alias.error" ng-if="$storage.alias.error"></span>
   </div>
 
   <div class="button-group">
-    <button class="btn btn--primary" ng-click="takeAlias()">Next</button>
+    <button class="btn btn--primary" ng-click="takeAlias()" ng-disabled="$storage.alias.disabled">Next</button>
+  </div>
+</div>
+
+<div class="box box--setup" ng-if="$storage.alias.registered && !$storage.room.registered">
+  <h2 class="title title--centered">Room Name</h2>
+
+  <div class="input-group">
+    <input type="text" class="big-input" id="room" ng-trim="true" ng-pattern="/[a-zA-Z0-9]+/" ng-change="checkRoom()" ng-model="$storage.room.input" ng-disabled="$storage.room.disabled">
+  </div>
+
+  <div class="input-group" ng-if="$storage.room.requiresPassword">
+    <label for="roomPassword">Password</label>
+    <input type="password" class="big-input" id="roomPassword" ng-model="$storage.room.password" ng-disabled="$storage.room.disabled">
+  </div>
+
+  <div class="input-group">
+    <span class="error-label" ng-bind="$storage.room.error" ng-if="$storage.room.error"></span>
+    <span class="message-label" ng-bind="$storage.room.message" ng-if="$storage.room.message"></span>
+  </div>
+
+  <div class="button-group">
+    <button class="btn btn--primary" ng-click="enterRoom()" ng-disabled="$storage.room.disabled">Enter Room</button>
   </div>
 </div>

@@ -6,6 +6,5 @@ module.exports = mongoose.model('Room', {
     index: {unique: true}
   },
   password: String,
-  ownerAlias: String,
-  occupants: [String]
+  ownerAlias: String
 });

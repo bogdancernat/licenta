@@ -19,6 +19,7 @@
 @import "_partials/spinner";
 @import "_partials/button";
 @import "_partials/box";
+@import "_partials/nav";
 @import "_partials/icons";
 
 
@@ -47,4 +48,8 @@ hr {
   border: 0;
   height: 1px;
   background-color: shade($slate, 10%);
+}
+
+.ngi-inspector {
+  color: $slate;
 }

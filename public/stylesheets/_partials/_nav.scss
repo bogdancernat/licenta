@@ -1,0 +1,75 @@
+.main-nav {
+  font-family: $font-default;
+  position: absolute;
+  @include size(100vw $nav-height);
+  top: 0;
+  left: 0;
+  background: rgba($slate, 0.3);
+  z-index: 9999;
+
+  &__user {
+    position: absolute;
+    padding: 0 3.5em 0 0.5em;
+    right: 0;
+    height: $nav-height;
+    font-size: 0.8em;
+    line-height: $nav-height + 5px;
+    @include transition(all 0.4s ease-in-out);
+    cursor: pointer;
+
+    i {
+      font-size: 2.1em;
+      position: absolute;
+      right: 0.5em;
+      display: inline-block;
+      top: 1px;
+      @include transition(all 0.4s ease-in-out);
+    }
+
+    &:hover {
+      i {
+        color: $blue;
+      }
+    }
+  }
+
+  &__menu {
+    position: absolute;
+    top: $nav-height + 7px;
+    right: 2em;
+    margin: 0;
+    padding: 0;
+    font-size: 0.7em;
+    @include transition(all 0.4s ease-in-out);
+    display: none;
+
+    &--open {
+      display: block;
+    }
+
+    &:before {
+      content: '';
+      display: block;
+      position: absolute;
+      top: -7px;
+      right: 10px;
+      @include triangle(10px 7px, $blue, up);
+    }
+
+    li {
+      @include transition(all 0.4s ease-in-out);
+      padding: 0.5em 2.5em;
+      background: $blue;
+      cursor: pointer;
+      border-top: 1px solid shade($blue, 10%);
+
+      &:first-child {
+        border-top: none;
+      }
+
+      &:hover {
+        background: saturate($slate, 30%);
+      }
+    }
+  }
+}

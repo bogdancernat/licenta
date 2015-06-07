@@ -26,15 +26,19 @@ html
     link(rel='stylesheet', href='/stylesheets/style.css')
 
   body(ng-app="bounceApp")
-    div(ng-view="")
+    div(ng-controller="MainController")
+      div(ng-view="")
 
   //- script(src="/bower_components/jquery/dist/jquery.js")
   script(src="/bower_components/angular/angular.min.js")
-  script(src="/bower_components/angular-animate/angular-animate.js")
-  script(src="/bower_components/angular-cookies/angular-cookies.js")
-  script(src="/bower_components/angular-resource/angular-resource.js")
-  script(src="/bower_components/angular-route/angular-route.js")
-  script(src="/bower_components/angular-sanitize/angular-sanitize.js")
+  script(src="/bower_components/moment/min/moment.min.js")
+  script(src="/bower_components/angular-moment/angular-moment.min.js")
+  script(src="/bower_components/angular-animate/angular-animate.min.js")
+  script(src="/bower_components/angular-cookies/angular-cookies.min.js")
+  script(src="/bower_components/angular-resource/angular-resource.min.js")
+  script(src="/bower_components/angular-route/angular-route.min.js")
+  script(src="/bower_components/angular-sanitize/angular-sanitize.min.js")
+  script(src="/bower_components/ngstorage/ngStorage.min.js")
   script(src="/socket.io/socket.io.js")
   script(src="/javascripts/ng-socket.js")
 
@@ -42,8 +46,15 @@ html
 
   //- angular controllers
   script(src="/javascripts/controllers/mainController.js")
+  script(src="/javascripts/controllers/indexController.js")
+  script(src="/javascripts/controllers/roomController.js")
   script(src="/javascripts/controllers/peerPanelController.js")
   script(src="/javascripts/controllers/chatController.js")
+  script(src="/javascripts/controllers/navController.js")
 
   //- angular services
-  script(src="/javascripts/services/appData.js")
+  script(src="/javascripts/services/videoStreaming.js")
+  script(src="/javascripts/services/audioStreaming.js")
+
+  //- angular directives
+  script(src="/javascripts/directives/ngEnter.js")

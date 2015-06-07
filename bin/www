@@ -1,83 +1,32 @@
 #!/usr/bin/env node
 
-var port   = normalizePort(process.env.PORT || '3000')
-// , sticky   = require('sticky-session')
-, cpuCount = require('os').cpus().length
-, cluster  = require('cluster')
-, config   = require('../config')
-, ioMongo  = require('socket.io-adapter-mongo')
-, net     = require('net')
-, app      = require('../app')
+var port  = normalizePort(process.env.PORT || '3000')
+, config  = require('../config')
+, debug   = require('debug')('bounce:server')
+, ioMongo = require('socket.io-adapter-mongo')
+, http    = require('http')
+, app     = require('../app')
 , socketController = require('../controllers/socketController')
+, server
+, io
 ;
 
 app.set('port', port);
+server = http.createServer(app);
+server.listen(port);
+server.on('error', onError);
+server.on('listening', onListening);
 
+/* socket.io init */
+io = require('socket.io')(server);
 
-if (cluster.isMaster) {
+io.adapter(ioMongo({
+  host: config.socketAdapter.host,
+  port: config.socketAdapter.port,
+  db: config.socketAdapter.db
+}));
 
-  var workers = [];
-
-  // Helper function for spawning worker at index 'i'.
-  var spawn = function (i) {
-    workers[i] = cluster.fork();
-
-    // Optional: Restart worker on exit
-    workers[i].on('exit', function (worker, code, signal) {
-      console.log('respawning worker', i);
-      spawn(i);
-    });
-  };
-
-  // Spawn workers.
-  for (var i = 0; i < cpuCount; i++) {
-    spawn(i);
-  }
-
-  var worker_index = function (ip, len) {
-    var s = 0;
-
-    for (var i = 0, _len = ip.length; i < _len; i++) {
-      if (parseInt(ip[i], 10)) {
-        s += parseInt(ip[i], 10);
-      }
-    }
-    return s % len;
-  };
-
-  // Create the outside facing server listening on our port.
-  var server = net.createServer({ pauseOnConnect: true }, function (connection) {
-    // We received a connection and need to pass it to the appropriate
-    // worker. Get the worker for this connection's source IP and pass
-    // it the connection.
-    var worker = workers[worker_index(connection.remoteAddress, cpuCount)];
-    worker.send('sticky-session:connection', connection);
-  }).listen(port);
-} else {
-  var server = app.listen(0, 'localhost');
-  var io = require('socket.io')(server);
-
-  io.adapter(ioMongo({
-    host: config.socketAdapter.host,
-    port: config.socketAdapter.port,
-    db: config.socketAdapter.db
-  }));
-
-  io.on('connection', socketController.connection);
-
-  process.on('message', function(message, connection) {
-    if (message !== 'sticky-session:connection') {
-        return;
-    }
-
-    // Emulate a connection event on the server by emitting the
-    // event with the connection the master sent us.
-    server.emit('connection', connection);
-
-    connection.resume();
-  });
-}
-
+io.on('connection', socketController.connection);
 
 function normalizePort(val) {
   var port = parseInt(val, 10);
@@ -93,4 +42,32 @@ function normalizePort(val) {
   }
 
   return false;
+}
+
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case 'EACCES':
+      console.error('Port ' + port + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error('Port ' + port + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function onListening() {
+  debug('Listening on port ' + server.address().port);
 }

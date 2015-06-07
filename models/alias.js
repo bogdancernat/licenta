@@ -5,5 +5,7 @@ module.exports = mongoose.model('Alias', {
     type: String,
     index: {unique: true}
   },
-  takenBy: String
+  rooms: [],
+  takenBy: String,
+  hash: String
 });

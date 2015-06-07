@@ -9,7 +9,11 @@
  */
 
 angular.module('bounceApp')
-  .controller('PeerPanelController', function ($scope, $routeParams, $location, $socket, appData) {
+  .controller('PeerPanelController', function ($scope, $routeParams, $location, $socket, $localStorage, videoStreaming, audioStreaming) {
+
+    videoStreaming.init();
+    audioStreaming.init();
+
     $scope.self = {
       videoActive: false,
       audioActive: false,
@@ -23,6 +27,10 @@ angular.module('bounceApp')
       videoMuted: false,
       audioMuted: false
     };
+
+    $socket.on('video-frame', function (frame) {
+      videoStreaming.updateReceiverVideoFrame(frame);
+    });
 
     $scope.toggleVideo = function (target) {
       if (target === 'self') {
@@ -41,7 +49,19 @@ angular.module('bounceApp')
     };
 
     function toggleOwnVideo () {
-      $scope.self.videoActive = !$scope.self.videoActive;
+      if (!$scope.self.videoActive) {
+        videoStreaming.startVideo(function (error) {
+          if (!error) {
+            $scope.self.videoActive = true;
+            $scope.$apply();
+          } else {
+            console.error(error);
+          }
+        });
+      } else {
+        videoStreaming.stopVideo();
+        $scope.self.videoActive = false;
+      }
     }
 
     function muteReceiverVideo () {
@@ -49,12 +69,20 @@ angular.module('bounceApp')
     }
 
     function toggleOwnAudio () {
-      $scope.self.audioActive = !$scope.self.audioActive;
-
+      if (!$scope.self.audioActive) {
+        audioStreaming.startStreaming(function (error) {
+          if (!error) {
+            $scope.self.audioActive = true;
+            $scope.$apply();
+          }
+        });
+      } else {
+        audioStreaming.stopStreaming();
+        $scope.self.audioActive = false;
+      }
     }
 
     function muteReceiverAudio () {
       $scope.receiver.audioMuted = !$scope.receiver.audioMuted;
-
     }
   });

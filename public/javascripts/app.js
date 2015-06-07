@@ -17,17 +17,19 @@ angular
     'ngResource',
     'ngRoute',
     'ngSanitize',
-    'ngSocket'
+    'ngSocket',
+    'ngStorage',
+    'angularMoment'
   ])
   .config(function ($routeProvider) {
     $routeProvider
       .when('/', {
         templateUrl: '/javascripts/views/index.html',
-        controller: 'MainController'
+        controller: 'IndexController'
       })
       .when('/room/:room_name', {
-        templateUrl: '/javascripts/views/index.html',
-        controller: 'MainController'
+        templateUrl: '/javascripts/views/room.html',
+        controller: 'RoomController'
       })
       .otherwise({
         redirectTo: '/'
