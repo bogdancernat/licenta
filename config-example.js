@@ -8,4 +8,11 @@ module.exports = {
   title: 'Bounce',
   crypto: {
     saltLength: 13
-  }};
+  },
+  twilio: {
+    sid: 'id',
+    auth_token: 'token'
+  }
+};
+
+// using twilio.com for STUN / TURN servers
