@@ -1,43 +1,34 @@
-<nav class="main-nav" ng-if="$storage.alias.registered" ng-controller="NavController">
-  <div class="main-nav__user" ng-click="toggleMenu()">Hello, {{$storage.alias.registered}} <i class="ion-navicon"></i></div>
-
-  <ul class="main-nav__menu" ng-class="{'main-nav__menu--open': menuIsOpen}">
-    <li ng-click="killAlias()">Kill Alias</li>
-    <li ng-click="leaveRoom()" ng-if="$storage.room.registered">Leave Room</li>
-  </ul>
+<nav class="main-nav" ng-if="alias.name">
+  <div class="main-nav__user" ng-click="toggleMenu()">Hello, {{alias.name}} <i class="ion-person"></i></div>
 </nav>
 
-<div class="box box--setup" ng-if="!$storage.alias.registered">
-  <h2 class="title title--centered">Alias</h2>
+<div class="container container--forms container--index">
+  <div class="box box--setup">
+    <h2 class="title title--centered">Credentials</h2>
 
-  <div class="input-group" ng-class="{'has-error': $storage.alias.error}">
-    <input type="text" class="big-input" id="alias" ng-model="$storage.alias.input" ng-trim="true" ng-pattern="/[a-zA-Z0-9]+/" ng-disabled="$storage.alias.disabled">
-    <span class="error-label" ng-enter="takeAlias()"ng-bind="$storage.alias.error" ng-if="$storage.alias.error"></span>
+    <div class="input-group">
+      <label for="alias">Alias</label>
+      <input type="text" class="big-input" id="alias" ng-trim="true" ng-enter="joinRoom()" ng-model="alias.name" ng-disabled="room.disabled" autocorrect="off" autocapitalize="none">
+    </div>
+
+    <div class="input-group">
+      <label for="roomPassword">Room</label>
+      <input type="text" class="big-input" id="room" ng-trim="true" ng-pattern="/[a-zA-Z0-9]+/" ng-change="checkRoom()" ng-enter="joinRoom()" ng-model="room.name" ng-disabled="room.disabled" autocorrect="off" autocapitalize="none">
+    </div>
+
+    <div class="input-group" ng-if="room.requiresPassword">
+      <label for="roomPassword">Password</label>
+      <input type="password" class="big-input" id="roomPassword" ng-model="room.password" ng-enter="joinRoom()" ng-disabled="room.disabled" autocorrect="off" autocapitalize="none">
+    </div>
+
+    <div class="input-group" ng-if="room.error || room.message">
+      <span class="error-label" ng-bind="room.error" ng-if="room.error"></span>
+      <span class="message-label" ng-bind="room.message" ng-if="room.message"></span>
+    </div>
+
+    <div class="button-group">
+      <button class="btn btn--primary" ng-click="joinRoom()" ng-disabled="room.disabled">Enter Room</button>
+    </div>
   </div>
-
-  <div class="button-group">
-    <button class="btn btn--primary" ng-click="takeAlias()" ng-disabled="$storage.alias.disabled">Next</button>
-  </div>
-</div>
-
-<div class="box box--setup" ng-if="$storage.alias.registered && !$storage.room.registered">
-  <h2 class="title title--centered">Room Name</h2>
-
-  <div class="input-group">
-    <input type="text" class="big-input" id="room" ng-trim="true" ng-pattern="/[a-zA-Z0-9]+/" ng-change="checkRoom()" ng-enter="enterRoom()" ng-model="$storage.room.input" ng-disabled="$storage.room.disabled">
-  </div>
-
-  <div class="input-group" ng-if="$storage.room.requiresPassword">
-    <label for="roomPassword">Password</label>
-    <input type="password" class="big-input" id="roomPassword" ng-model="$storage.room.password" ng-enter="enterRoom()" ng-disabled="$storage.room.disabled">
-  </div>
-
-  <div class="input-group">
-    <span class="error-label" ng-bind="$storage.room.error" ng-if="$storage.room.error"></span>
-    <span class="message-label" ng-bind="$storage.room.message" ng-if="$storage.room.message"></span>
-  </div>
-
-  <div class="button-group">
-    <button class="btn btn--primary" ng-click="enterRoom()" ng-disabled="$storage.room.disabled">Enter Room</button>
-  </div>
+  
 </div>

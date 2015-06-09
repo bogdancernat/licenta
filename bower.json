@@ -26,6 +26,7 @@
     "angular-sanitize": "~1.4.0",
     "ionicons": "~2.0.1",
     "ngstorage": "~0.3.4",
-    "angular-moment": "~0.10.1"
+    "angular-moment": "~0.10.1",
+    "adapterjs": "~0.11.0"
   }
 }

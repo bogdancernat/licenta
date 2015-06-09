@@ -1,295 +1,251 @@
 var crypto = require('crypto')
 , Alias    = require('../models/alias')
 , Room     = require('../models/room')
+, config   = require('../config')
+, twilio   = require('twilio')(config.twilio.sid, config.twilio.auth_token)
 , passwordController = require('./passwordController')
 ;
 
 exports.connection = function (socket) {
   var ioScope = this;
 
-  socket.on('get-alias', function (data) {
-    socket.emit('get-alias:response', {
-      alias: crypto.randomBytes(3).toString('hex')
-    });
+  // better sockets
+
+  socket.on('leave-room', function (data) {
+    if (data.room) {
+      Room.findOne({'peers.sid': socket.id}, function (errRoom, room) {
+        if(room) {
+          for (var i = room.peers.length - 1; i >= 0; i--) {
+            if (room.peers[i].sid === socket.id) {
+              var alias = room.peers[i].alias;
+
+              room.peers.splice(i, 1);
+              room.save();
+              socket.broadcast.to(data.room).emit('peer-left', {
+                sid: socket.id,
+                alias: alias
+              });
+              socket.leave(data.room);
+              socket.leave(alias + ':' + data.room);
+              break;
+            }
+          };
+        }
+      });
+    }
   });
 
-  socket.on('disconnect', function () {
-    Alias.findOne({takenBy: socket.id}, function (errAlias, alias) {
-      if(alias && alias.rooms.length) {
+  socket.on('check-room', function (data) {
+    var socketResponse = {
+      error: null,
+      message: null,
+      requiresPassword: false
+    };
 
-        for (var i = alias.rooms.length - 1; i >= 0; i--) {
-          var room = alias.rooms[i];
-          ioScope.to(room).emit('recount-peers');
-        };
+    if (data.room) {
+      Room.findOne({name: data.room}, function (err, room) {
+        if (room) {
+          if (room.password) {
+            socketResponse.error = 'This room requires a password to enter.';
+            socketResponse.requiresPassword = true;
+          } else {
+            socketResponse.message = 'This room exists, come on in.'
+          }
+        } else {
+          socketResponse.message = 'This room is ready to be created.';
+        }
 
-        alias.rooms = [];
-        alias.save();
+        socket.emit('check-room:response', socketResponse);
+      });
+    } else {
+      socketResponse.error = "Please enter a room name";
+      socket.emit('check-room:response', socketResponse);
+    }
+  });
+
+  socket.on('join-room', function (data) {
+    var socketResponse = {
+      error: null
+    };
+
+    if (!data.alias) {
+      socketResponse.error = "Please enter an alias";
+      socket.emit('join-room:response', socketResponse);
+      return;
+    }
+
+    if (!data.room) {
+      socketResponse.error = "Please enter a room name";
+      socket.emit('join-room:response', socketResponse);
+      return;
+    }
+
+    Room.create({
+      name: data.room,
+      peers: [{
+        sid: socket.id,
+        alias: data.alias
+      }]
+    }, function (errCreate) {
+      if (errCreate) {
+        if (errCreate.code === 11000) {
+          // duplicate, already exists so just connect
+          Room.findOne({name: data.room}, function (errFind, room) {
+            if (room.password) {
+              if (passwordController.validateHash(room.password, data.password)) {
+                // yay, passwords match, permission is granted
+                socket.join(data.room);
+                socket.join(data.alias + ':' + data.room);
+                socket.broadcast.to(data.room).emit('peer-joined', {
+                  sid: socket.id,
+                  alias: data.alias
+                });
+              } else {
+                socketData.error = 'Invalid password.';
+              }
+            } else {
+              var existingAlias = false;
+              var sameAlias = null;
+
+              if (room.peers && room.peers.length) {
+                sameAlias = room.peers.filter(function (peer) {
+                  return peer.alias === data.alias;
+                }).pop();
+              }
+
+              if (sameAlias) {
+                if (ioScope.sockets[0].adapter.sids[sameAlias.sid] !== undefined) {
+                  existingAlias = true;
+                } else {
+                  // socket is not connected to the app
+                  room.peers = room.peers.filter(function (peer) {
+                    return peer.alias !== data.alias;
+                  });
+                }
+              }
+
+              if (existingAlias) {
+                socketResponse.error = "Alias already exists in room, please choose another.";
+              } else {
+                room.peers.push({
+                  sid: socket.id,
+                  alias: data.alias
+                });
+                room.save();
+                socket.join(data.room);
+                socket.join(data.alias + ':' + data.room);
+                socket.broadcast.to(data.room).emit('peer-joined', {
+                  sid: socket.id,
+                  alias: data.alias
+                });
+              }
+            }
+
+            socket.emit('join-room:response', socketResponse);
+          });
+        } else {
+          // other error, don't connect
+          socketResponse.error = 'There was an error with the DB.';
+          socket.emit('join-room:response', socketResponse);
+        }
+      } else {
+        // room created
+        socket.join(data.room);
+        socket.join(data.alias + ':' + data.room);
+        socket.broadcast.to(data.room).emit('peer-joined', {
+          sid: socket.id,
+          alias: data.alias
+        });
+        socket.emit('join-room:response', socketResponse);
       }
     });
   });
 
-  socket.on('take-alias', function (data) {
-    if (data.alias) {
-      var newAliasHash = crypto.randomBytes(128).toString('hex');
-
-      Alias.create({
-        name: data.alias,
-        hash: newAliasHash,
-        takenBy: socket.id
-      }, function (err) {
-        var returnData = {
-          error: null,
-          alias: data.alias,
-          ok: true
-        };
-
-        if (err) {
-          returnData.ok = false;
-
-          if (err.code === 11000) {
-
-            if (data.hash) {
-              Alias.findOne({name: data.alias}, function (errFind, alias) {
-                if (!errFind) {
-                  if (alias.hash === data.hash) {
-                    returnData.ok = true;
-                    returnData.hash = alias.hash;
-
-                    alias.takenBy = socket.id;
-                    alias.save();
-                  } else {
-                    returnData.error = 'Verification failed, generating new alias.';
-                    returnData.forceRandomAlias = true;
-                  }
-                } else {
-                  console.error(errFind);
-                }
-                socket.emit('take-alias:response', returnData);
-              });
-            } else {
-              returnData.error = 'This alias is taken.';
-              socket.emit('take-alias:response', returnData);
-            }
-
-          } else {
-            returnData.error = err.errmsg || 'Error while creating document in db.';
-            socket.emit('take-alias:response', returnData);
-          }
-        } else {
-          returnData.hash = newAliasHash;
-          socket.emit('take-alias:response', returnData);
-        }
-      });
-    } else {
-      socket.emit('take-alias:response', {
-        error: 'Please enter an alias.',
-        ok: false
-      });
-    }
-  });
-
-  socket.on('enter-room', function (data) {
-    var needToRecountPeers = false;
-    if (data.room) {
-
-      Room.create({
-        name: data.room,
-        ownerAlias: data.alias
-      }, function (err) {
-        var socketData = {
-          error: null,
-          ok: false
-        };
-        if (err) {
-          if (err.code === 11000) {
-            var pearsInRoom = 0;
-
-            try {
-              pearsInRoom = Object.keys(ioScope.adapter.rooms[data.room]).length;
-            } catch (e) {
-              console.log(e);
-            }
-
-            // room exists, see if we can join it.
-            Room.findOne({name: data.room}, function (errFind, room) {
-              if (pearsInRoom > 1) {
-                socketData.ok = false;
-                socketData.error = "This room is at full capacity right now.";
-                socket.emit('enter-room:response', socketData);
-              } else {
-                if (room.password) {
-                  if (data.password) {
-                    if (passwordController.validateHash(room.password, data.password)) {
-                      // yay, passwords match, permission is granted
-                      socket.join(data.room);
-                      socketData.ok = true;
-                      needToRecountPeers = true;
-
-                    } else {
-                      socketData.ok = false;
-                      socketData.error = 'Invalid password.';
-                    }
-                  } else {
-                    // no password was received, won't test with undefined value
-                    socketData.ok = false;
-                    socketData.error = 'Please enter a password for the room.';
-                  }
-                } else {
-                  socket.join(data.room);
-                  needToRecountPeers = true;
-                  socketData.ok = true;
-                }
-
-                if (socketData.ok) {
-                  Alias.findOne({takenBy: socket.id}, function (errAlias, alias) {
-                    if (alias) {
-                      if (alias.rooms.indexOf(data.room) === -1) {
-                        alias.rooms.push(data.room);
-                        alias.save();
-                      }
-                    }
-
-                    socket.emit('enter-room:response', socketData);
-
-                    if (needToRecountPeers) {
-                      ioScope.to(data.room).emit('recount-peers');
-                    }
-                  });
-                } else {
-                  socket.emit('enter-room:response', socketData);
-
-                  if (needToRecountPeers) {
-                    ioScope.to(data.room).emit('recount-peers');
-                  }
-                }
-              }
-
-
+  socket.on('disconnect', function () {
+    Room.findOne({'peers.sid': socket.id}, function (errRoom, room) {
+      if(room) {
+        for (var i = room.peers.length - 1; i >= 0; i--) {
+          if (room.peers[i].sid === socket.id) {
+            socket.broadcast.to(room.name).emit('peer-left', {
+              sid: socket.id,
+              alias: room.peers[i].alias
             });
+            room.peers.splice(i, 1);
+            room.save();
+            break;
           }
-        } else {
-          socketData.ok = true;
-          socket.join(data.room);
-
-          Alias.findOne({takenBy: socket.id}, function (errAlias, alias) {
-            if (alias) {
-              if (alias.rooms.indexOf(data.room) === -1) {
-                alias.rooms.push(data.room);
-                alias.save();
-              }
-            }
-
-            socket.emit('enter-room:response', socketData);
-            ioScope.to(data.room).emit('recount-peers');
-          });
-        }
-      });
-    } else {
-      socket.emit('enter-room:response', {
-        error: 'Please enter a room name.',
-        ok: false
-      });
-    }
-  });
-
-  socket.on('get-room', function (data) {
-    socket.emit('get-room:response', {
-      room: crypto.randomBytes(3).toString('hex')
+        };
+      }
     });
   });
 
-  socket.on('check-room', function (data) {
-    if (data.room) {
-      Room.findOne({name: data.room}, function (err, room) {
-        if (room) {
-          var pearsInRoom = 0;
-
-          try {
-            pearsInRoom = Object.keys(ioScope.adapter.rooms[data.room]).length;
-          } catch (e) {
-            console.log(e);
-          }
-
-          if (pearsInRoom > 1) {
-            socket.emit('check-room:response', {
-              error: 'This room is at full capacity right now.',
-              message: null,
-              ok: false
-            });
-          } else {
-            if (room.password) {
-              socket.emit('check-room:response', {
-                error: 'This room requires a password to enter.',
-                password: true,
-                ok: false
-              });
-            } else {
-              socket.emit('check-room:response', {
-                error: null,
-                message: 'This room exists and has it\'s doors wide open.',
-                ok: true
-              });
-            }
-          }
-
-        } else {
-          socket.emit('check-room:response', {
-            error: null,
-            message: 'This room is available for initialization.',
-            ok: true
-          });
-        }
-      });
-    } else {
-      socket.emit('check-room:response', {
-        error: 'Please enter a room name.',
-        ok: false
-      });
+  socket.on('greet-peer', function (data) {
+    if (data.sidPeer && data.ownAlias) {
+      socket.to(data.sidPeer).emit('peer-said-hi', {alias: data.ownAlias});
     }
   });
-
-  socket.on('checking-in', function (data) {
-    if (data.room && socket.rooms.indexOf(data.room) != -1) {
-      socket.broadcast.to(data.room).emit('check-in', {alias: data.alias});
-    }
-  });
-
-  socket.on('leave-room', function (data) {
-    if (data.room && socket.rooms.indexOf(data.room) != -1) {
-      socket.leave(data.room);
-      socket.broadcast.to(data.room).emit('recount-peers');
-
-      Alias.findOne({takenBy: socket.id}, function (errAlias, alias) {
-        if(alias) {
-          var roomIndex = alias.rooms.indexOf(data.room);
-
-          if (roomIndex != -1) {
-            alias.rooms.splice(roomIndex, 1);
-            alias.save();
-          }
-        }
-      });
-    }
-  });
-
-
   // handling data
 
   socket.on('new-message', function (message) {
     if (message.room) {
-      ioScope.to(message.room).emit('new-message', message);
+      if (message.receiver) {
+        ioScope.to(message.receiver + ':' + message.room).emit('new-message', message);
+      } else {
+        socket.broadcast.to(message.room).emit('new-message', message);
+      }
     }
   });
 
-  socket.on('video-frame', function (data) {
-    if (data.room) {
-      socket.broadcast.to(data.room).emit('video-frame', data.frame);
-    }
+  // handling calls
+
+  socket.on('signal-call', function (data) {
+    ioScope.to(data.peer + ':' + data.room).emit('signal-call:request', data);
+  });
+
+  socket.on('signal-call:response', function (data) {
+    ioScope.to(data.peer + ':' + data.room).emit('signal-call:response', data);
+  });
+
+  socket.on('signal-call:cancel-request', function (data) {
+    ioScope.to(data.peer + ':' + data.room).emit('signal-call:cancel-request', data);
+  });
+
+  socket.on('signal-call:busy', function (data) {
+    ioScope.to(data.peer + ':' + data.room).emit('signal-call:busy', data);
+  });
+
+  socket.on('rtc-ice-servers', function () {
+    twilio.tokens.create(function (err, response) {
+      var socketResponse = {
+        error: null,
+        result: null
+      };
+
+      if (!err) {
+        socketResponse.result = response;
+      } else {
+        console.error(err);
+        socketResponse.error = err;
+      }
+
+      socket.emit('rtc-ice-servers:response', socketResponse);
+    })
+  });
+
+
+  socket.on('send-ice-candidate', function (data) {
+    ioScope.to(data.peer + ':' + data.room).emit('send-ice-candidate:response', data);
+  });
+
+  socket.on('send-rtc-offer', function (data) {
+    ioScope.to(data.peer + ':' + data.room).emit('send-rtc-offer:response', data);
+  });
+
+  socket.on('send-rtc-answer', function (data) {
+    ioScope.to(data.peer + ':' + data.room).emit('send-rtc-answer:response', data);
+  });
+
+  socket.on('end-call', function (data) {
+    ioScope.to(data.peer + ':' + data.room).emit('end-call', data);
   });
 };
-
-/*
-io.to('room_name').emit('something', data)
-socket.join('some room');
-socket.leave('room');
-*/

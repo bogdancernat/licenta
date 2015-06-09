@@ -4,17 +4,35 @@
   width: 100%;
   height: $btn-height;
   text-transform: uppercase;
+  line-height: $btn-height;
 
   @include transition(all 0.4s ease-in-out);
 
   &--primary {
     color: #fff;
-    background: $blue;
-    border: 1px solid lighten($blue, 5%);
+    background: $sexy-slate;
+    border: 1px solid lighten($sexy-slate, 5%);
 
     &:hover {
-      border-color: lighten($blue, 20%);
-      background: lighten($blue, 10%);
+      border-color: lighten($blue, 5%);
+      background: $blue;
+    }
+
+    &:active {
+      border-color: lighten($orange, 10%);
+      background: lighten($orange, 10%);
+    }
+  }
+
+  &--secondary {
+    color: #fff;
+    background: $slate;
+    border: 1px solid lighten($slate, 5%);
+    font-size: 0.8em;
+
+    &:hover {
+      border-color: lighten($slate, 20%);
+      background: lighten($slate, 10%);
     }
 
     &:active {

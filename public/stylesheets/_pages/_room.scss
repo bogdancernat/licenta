@@ -1,166 +1,36 @@
-$peer-side-width: 18vw;
-$peer-side-spacing: 2vw;
-$peer-content-width: $peer-side-width - 2 * $peer-side-spacing;
+$chat-wrapper-spacing: 1vw;
+$chat-wrapper-width: 70vw;
+$chat-messages-input-height: 70px;
 
-.peer-sides {
+.chat-wrapper {
+  @include calc(height, "100vh - #{$nav-height}");
+  width: $chat-wrapper-width;
+  padding: 0 $chat-wrapper-spacing;
+  margin: 0 0 0 100vw - $chat-wrapper-width;
+  background-color: transparent;
   position: relative;
-}
 
-.peer-side {
-  position: absolute;
-  top: 0;
-  height: 100vh;
-  width: $peer-side-width;
+  @media screen and (max-width: $small-device) {
+    width: 100vw;
+    margin: 0;
+  }
 
-  &--left {
+  &__alert {
+    @include user-select(none);
+    width: 100%;
+    padding: 0.5em 1em;
+    background: desaturate($red, 10%);
+    color: #fff;
+    font-size: 0.8em;
+    position: absolute;
+    top: 0;
     left: 0;
+    z-index: 99;
   }
-
-  &--right {
-    right: 0;
-  }
-
-  .portrait {
-    @include size($peer-content-width);
-    margin: $nav-height * 1.25 auto 1vw auto;
-    border-radius: 50%;
-    background-color: rgba(shade($slate, 30%), 0.4);
-    overflow: hidden;
-    @include box-sizing(border-box);
-    border: 2px solid shade($slate, 40%);
-    position: relative;
-
-    canvas,
-    video {
-      @include size($peer-content-width);
-      display: block;
-    }
-  }
-
-  .audio-video-buttons {
-    @include size(8vw 1.7em);
-    margin: 0 auto;
-  }
-
-  hr {
-    width: $peer-content-width;
-  }
-
-  &--self {
-    .file-sharing-dropzone {
-      border-color: $self-color;
-    }
-
-    .portrait {
-      border: 2px solid $self-color;
-    }
-  }
-
-  &--receiver {
-    .file-sharing-dropzone {
-      border-color: $receiver-color;
-    }
-
-    .portrait {
-      border: 2px solid $receiver-color;
-    }
-  }
-}
-
-.file-sharing-dropzone {
-  border: 2px dashed $slate;
-  position: absolute;
-  width: $peer-content-width + $peer-side-spacing / 2;
-  height: $peer-content-width * 0.75;
-  left: $peer-side-spacing / 2;
-  bottom: 1vw;
-  background: rgba(darken($slate, 20%), 0.4);
-  text-align: center;
-
-  &:after {
-    content: 'Drop files to share';
-    font-size: 0.65em;
-    color: $slate;
-    line-height: $peer-content-width * 0.75;
-  }
-}
-
-.audio-video-buttons {
-  button {
-    border: 0;
-    display: block;
-    float: left;
-    background-color: transparent;
-    width: 50%;
-    padding: 0;
-    height: 1.3em;
-    font-size: 1.3em;
-    position: relative;
-    @include transition(all 0.4s ease-in-out);
-
-    i {
-      display: inline-block
-    }
-
-    &:after {
-      position: absolute;
-      @include transition(all 0.4s ease-in-out);
-      content: '';
-      left: 0;
-      bottom: 0;
-      @include triangle(4vw 0em, $red, down-right);
-      opacity: 0.7;
-    }
-
-    &:before {
-      position: absolute;
-      @include transition(all 0.4s ease-in-out);
-      content: '';
-      left: 0;
-      top: 0;
-      @include triangle(4vw 0em, $red, up-left);
-      opacity: 0.7;
-    }
-
-    &.active {
-      color: lighten($green, 10%);
-      box-shadow: 0px 1px 0px 0px lighten($green, 10%) !important;
-    }
-
-    &.muted {
-      &:after {
-        border-bottom-width: 1.3em;
-      }
-      &:before {
-        border-top-width: 1.3em;
-      }
-    }
-
-    &:hover {
-      // background-color: $orange;
-      // border-bottom: 2px solid $orange;
-      box-shadow: 0px 1px 0px 0px $orange;
-    }
-
-    &:active {
-      // background-color: $red;
-      box-shadow: 0px 1px 0px 0px $red;
-    }
-  }
-}
-
-$chat-window-spacing: 1vw;
-
-.chat-window {
-  width: 100vw - 2 * $peer-side-width;
-  padding: 0 $chat-window-spacing;
-  margin: 0 auto;
-  height: 100vh;
-  background-color: rgba(shade($slate, 30%), 0.3);
 
   &__messages {
     width: 100%;
-    height: 90vh;
+    @include calc(height, "100vh - #{$chat-messages-input-height + $nav-height}");
     overflow: hidden;
     position: relative;
 
@@ -196,28 +66,35 @@ $chat-window-spacing: 1vw;
         margin-top: 5px;
         color: lighten($slate, 50%);
         width: 100%;
+
+        a {
+          color: #fff;
+        }
       }
 
       &--self {
+        background-color: rgba(#fff, 0.6);
+
         #{$lineRoot}__alias {
           color: $self-color;
         }
 
         #{$lineRoot}__message {
+          color: $text-dark;
         }
       }
 
       &--receiver {
-        background-color: rgba(shade($slate, 30%), 0.2);
+        background-color: rgba(#fff, 0.9);
 
         &:after {
           clear: both;
-          displaY: block;
+          display: block;
           content: '';
         }
 
         #{$lineRoot}__alias {
-          color: $receiver-color;
+          color: $blue;
           float: right;
         }
 
@@ -227,6 +104,7 @@ $chat-window-spacing: 1vw;
         }
 
         #{$lineRoot}__message {
+          color: $text-dark;
           float: right;
           text-align: right;
         }
@@ -236,47 +114,50 @@ $chat-window-spacing: 1vw;
 
   &__input {
     width: 100%;
-    height: 10vh;
+    height: $chat-messages-input-height;
 
     textarea {
+      @include transition(all 0.4s ease-in-out);
       width: 90%;
-      height: 8vh;
-      margin-top: 1vh;
+      height: $chat-messages-input-height * 0.8;
+      margin-top: $chat-messages-input-height * 0.2 - 5px;
       float: left;
       resize: none;
-      background-color: rgba(shade($slate, 30%), 0.3);
+      // background-color: rgba(shade($slate, 30%), 0.7);
+      background-color: #fff;
+      border-width: 1px;
       border-color: $slate;
       border-style: solid;
-      color: lighten($slate, 50%);
+      color: $text-dark;
       line-height: 1.1;
       display: block;
       padding: 0.5em;
-      font-size: 0.83em;
-      font-family: $font-default;
-      @include transition(all 0.4s ease-in-out);
+      font-size: 0.93em;
+      font-family: $font-mono;
 
       &:focus {
 
-        border-color: $orange;
+        border-color: $blue;
 
         &+ button {
-          background-color: $orange;
+          background-color: $blue;
         }
       }
     }
 
     button {
+      @include user-select(none);
+      @include transition(all 0.4s ease-in-out);
       width: 10%;
-      height: 8vh;
+      height: $chat-messages-input-height * 0.8;
       border: 0;
       display: block;
       float: left;
       background-color: $slate;
-      margin-top: 1vh;
+      margin-top: $chat-messages-input-height * 0.2 - 5px;
       padding: 0;
       font-size: 1.3em;
       position: relative;
-      @include transition(all 0.4s ease-in-out);
 
       i {
         display: inline-block
@@ -287,4 +168,398 @@ $chat-window-spacing: 1vw;
       }
     }
   }
+}
+
+.peers-wrapper {
+  @include calc(height, "100vh - #{$nav-height}");
+  @include transition(left 0.4s ease-in-out);
+  @include user-select(none);
+  $peersWrapperScope: &;
+  width: 99vw - $chat-wrapper-width;
+  position: absolute;
+  left: 0;
+  top: $nav-height;
+  background-color: rgba(shade($slate, 30%), 1);
+  z-index: 100;
+
+  $search-height: 50px;
+  &__list {
+    @include calc(height, "100vh - #{$search-height + $nav-height}");
+    @include transition(left 0.4s ease-in-out);
+    padding-top: 10px;
+    width: 100%;
+    overflow: auto;
+
+    $item-height: 40px;
+
+    &__item {
+      @include size(95% $item-height);
+      @include transition(all 0.4s ease-in-out);
+      margin: 4px auto auto auto;
+      background-color: $blue;
+      border: 0px solid shade($blue, 10%);
+      cursor: pointer;
+      overflow: hidden;
+
+      &:first-child {
+        margin-top: 0;
+      }
+
+      .peer-name {
+        @include transition(all 0.4s ease-in-out);
+        @include size(100% $item-height);
+        padding: 0 1em;
+        font-size: 0.8em;
+        line-height: $item-height * 1.1;
+        color: lighten($slate, 30%);
+        color: #fff;
+        display: block;
+      }
+
+      $controls-height: $item-height;
+
+      .peer-controls {
+        @include size(100% $controls-height);
+        @include display(flex);
+        position: relative;
+
+        &__action {
+          @include flex(1);
+          @include box-sizing(border-box);
+          @include transition(all 0.4s ease-in-out);
+          @include display(flex);
+
+          height: $controls-height;
+          background: $slate;
+          text-align: center;
+          line-height: $controls-height * 1.05;
+
+          align-items: center;
+          justify-content: center;
+
+          i {
+            display: block;
+            margin-right: 5px;
+            font-size: 1em;
+            height: $controls-height;
+          }
+
+          span {
+            height: $controls-height;
+            display: block;
+            font-size: 0.8em;
+          }
+
+          &--call {
+            color: $text-dark;
+            background: desaturate($green, 20%);
+
+            &:hover {
+              color: shade($text-dark, 10%);
+              background: saturate($green, 20%);
+            }
+
+            &:active {
+              background: desaturate($green, 10%);
+            }
+          }
+
+          &--transfer {
+            color: #fff;
+            background: $sexy-slate;
+
+            &:hover {
+              background: saturate($sexy-slate, 20%);
+            }
+
+            &:active {
+              background: desaturate($sexy-slate, 10%);
+            }
+          }
+
+          &--chat {
+            &:hover {
+              background: desaturate($red, 10%);
+            }
+
+            &:active {
+              background: $red;
+            }
+          }
+
+          @media screen and (max-width: $small-device) {
+            i {
+              font-size: 1.5em;
+            }
+
+            span {
+              font-size: 1em;
+            }
+          }
+        }
+      }
+
+      &:hover {
+        .peer-name {
+          color: #fff;
+          margin-top: -$item-height;
+        }
+      }
+
+      &--room {
+        background: $sexy-slate;
+        border-color: shade($sexy-slate, 20%);
+        margin-bottom: 10px;
+
+        .peer-name {
+          color: #fff;
+        }
+      }
+
+      &--active {
+        // background: desaturate($green, 30%);
+        border-bottom-color: $green;
+        border-bottom-width: 3px;
+        .peer-name {
+          color: #fff;
+        }
+      }
+
+      @media screen and (max-width: $small-device) {
+        // background-color: rgba(shade($slate, 40%), 0.5);
+      }
+    }
+  }
+
+  &__search {
+    @include size(100% $search-height);
+    position: relative;
+    overflow: auto;
+    $input-height: $search-height * 0.8;
+
+    input {
+      @include transition(all 0.4s ease-in-out);
+      @include size(95% $input-height);
+      margin: $search-height * 0.1 auto;
+      background-color: #fff;
+      border-width: 1px;
+      border-color: $slate;
+      border-style: solid;
+      color: $text-dark;
+      line-height: $input-height + 3px;
+      display: block;
+      padding: 0 2.6em 0 0.5em;
+      font-size: 1em;
+      font-family: $font-mono;
+
+      &:focus {
+        border-color: $blue;
+      }
+
+      &:focus + i {
+        color: $blue;
+      }
+    }
+
+    i {
+      @include size(1.6em $input-height);
+      @include transition(all 0.4s ease-in-out);
+      position: absolute;
+      display: block;
+      right: 2.5%;
+      top: $search-height * 0.1;
+      font-size: 1.8em;
+      text-align: center;
+      line-height: $input-height * 1.15;
+      color: $text-dark;
+    }
+  }
+
+  &--open {
+    @media screen and (max-width: $small-device) {
+      left: 0 !important;
+    }
+  }
+
+  @media screen and (max-width: $small-device) {
+    width: 100vw;
+    left: -100vw;
+    // background-color: rgba(shade($slate, 70%), 1);
+    // background-image: url('../images/black-pattern.png');
+    background-color: rgba(shade($slate, 30%), 1);
+  }
+}
+
+
+.overlay--call {
+  $root: &;
+  z-index: 150;
+
+  video {
+    @include size(300px);
+    display: block;
+  }
+
+  .video-wrapper {
+    @include transition(all 0.4s ease-in-out);
+    position: absolute;
+
+    video {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    &--self {
+      @include size(100px);
+      background: rgba(0, 0, 0, 0.5);
+      bottom: 1em;
+      left: 1em;
+    }
+
+    &--receiver {
+      @include size(100vw 100vh);
+      background: $sexy-slate;
+    }
+  }
+
+  $end-call-size: 60px;
+  .end-call {
+    @include transition(all 0.4s ease-in-out);
+    @include size($end-call-size);
+    border-radius: 50%;
+    position: absolute;
+    display: block;
+    background: $red;
+    bottom: 0.5em;
+    left: 50%;
+    margin-left: -$end-call-size/2;
+    font-size: 2em;
+    border: 2px solid shade($red, 20%);
+    z-index: 300;
+
+    &:hover {
+      background: saturate($red, 20%);
+      border-top-color: lighten($red, 10%);
+      border-left-color: lighten($red, 10%);
+      border-bottom-color: lighten($red, 20%);
+      border-right-color: lighten($red, 20%);
+    }
+
+    &:active {
+      background: saturate($orange, 20%);
+    }
+  }
+
+  &.fullscreen {
+    .video-wrapper {
+
+      &--self {
+        @include size(100px);
+        bottom: 1em;
+        left: 1em;
+
+        &:hover {
+          @include size(300px);
+
+          @media screen and (max-width: $small-device) {
+            width: 96vw;
+            height: 300px;
+            height: 50vh;
+            left: 2vw;
+          }
+        }
+      }
+
+      &--receiver {
+        @include size(100vw 100vh);
+      }
+    }
+  }
+}
+
+.overlay--call-init {
+  @include display(flex);
+  align-items: center;
+  justify-content: center;
+}
+
+.calling-box {
+  @include user-select(none);
+  width: 95vw;
+  max-width: 450px;
+  border: 1px solid shade($slate, 35%);;
+  background: shade($slate, 30%);
+
+  .title {
+    text-align: center;
+    font-size: 0.9em;
+    color: #fff;
+    margin: 1em 0;
+    padding: 0 0.5em;
+  }
+
+  .peer {
+    text-align: center;
+    margin: 1.5em 0;
+    font-size: 2em;
+    padding: 0 0.5em;
+  }
+
+  .spinner {
+    margin-bottom: 1.5em;
+  }
+
+  .line-busy {
+    text-align: center;
+    margin-bottom: 1.5em;
+  }
+
+  .buttons {
+    @include display(flex);
+
+    button {
+      @include transition(all 0.4s ease-in-out);
+      @include flex(1);
+      height: 50px;
+      line-height: 50px;
+      border: 0;
+      font-weight: 400;
+      text-transform: uppercase;
+
+      i {
+        margin-right: 5px;
+        font-size: 2em;
+      }
+
+      &.answer {
+        color: shade($text-dark, 30%);
+        background: desaturate($green, 20%);
+
+        &:hover {
+          color: shade($text-dark, 40%);
+          background: saturate($green, 20%);
+        }
+
+        &:active {
+          background: desaturate($green, 10%);
+        }
+      }
+
+      &.hang-up {
+        color: shade($text-dark, 30%);
+        background: desaturate($red, 10%);
+
+        &:hover {
+          color: shade($text-dark, 40%);
+          background: saturate($red, 20%);
+        }
+
+        &:active {
+          background: desaturate($red, 10%);
+        }
+      }
+    }
+  }
+
 }

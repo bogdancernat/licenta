@@ -26,10 +26,11 @@ html
     link(rel='stylesheet', href='/stylesheets/style.css')
 
   body(ng-app="bounceApp")
-    div(ng-controller="MainController")
-      div(ng-view="")
+    div(ng-view="")
 
   //- script(src="/bower_components/jquery/dist/jquery.js")
+  //- script(src="/bower_components/webrtc-adapter/adapter.js")
+  script(src="/bower_components/adapterjs/publish/adapter.min.js")
   script(src="/bower_components/angular/angular.min.js")
   script(src="/bower_components/moment/min/moment.min.js")
   script(src="/bower_components/angular-moment/angular-moment.min.js")
@@ -45,16 +46,12 @@ html
   script(src="/javascripts/app.js")
 
   //- angular controllers
-  script(src="/javascripts/controllers/mainController.js")
   script(src="/javascripts/controllers/indexController.js")
   script(src="/javascripts/controllers/roomController.js")
-  script(src="/javascripts/controllers/peerPanelController.js")
   script(src="/javascripts/controllers/chatController.js")
-  script(src="/javascripts/controllers/navController.js")
 
   //- angular services
-  script(src="/javascripts/services/videoStreaming.js")
-  script(src="/javascripts/services/audioStreaming.js")
+  script(src="/javascripts/services/nav.js")
 
   //- angular directives
   script(src="/javascripts/directives/ngEnter.js")

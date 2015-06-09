@@ -18,6 +18,7 @@
 @import "_partials/inputs";
 @import "_partials/spinner";
 @import "_partials/button";
+@import "_partials/overlay";
 @import "_partials/box";
 @import "_partials/nav";
 @import "_partials/icons";
@@ -25,6 +26,7 @@
 
 @import "_pages/homepage";
 @import "_pages/room";
+
 // @import "_pages/contact";
 // @import "_pages/feedback";
 // @import "_pages/auth";
@@ -39,7 +41,7 @@ body {
   // font-family: $font-default;
   font-family: $font-mono;
   font-weight: 300;
-  background-image: url('../images/noisy_net.png');
+  background-image: url('../images/light-bg.png');
   color: #fff;
 }
 

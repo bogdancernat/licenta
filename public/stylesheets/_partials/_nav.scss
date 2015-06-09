@@ -1,30 +1,63 @@
 .main-nav {
-  font-family: $font-default;
-  position: absolute;
   @include size(100vw $nav-height);
+  @include display(flex);
+  @include user-select(none);
+  font-family: $font-mono;
+  position: absolute;
   top: 0;
   left: 0;
-  background: rgba($slate, 0.3);
+  background: rgba($slate, 0.8);
   z-index: 9999;
 
-  &__user {
-    position: absolute;
-    padding: 0 3.5em 0 0.5em;
-    right: 0;
-    height: $nav-height;
-    font-size: 0.8em;
+  &__section {
+    @include flex(1);
+  }
+
+  &__room {
+    @include size(100% $nav-height);
+    width: 100%;
+    display: block;
     line-height: $nav-height + 5px;
-    @include transition(all 0.4s ease-in-out);
+    text-align: center;
     cursor: pointer;
 
-    i {
-      font-size: 2.1em;
-      position: absolute;
-      right: 0.5em;
-      display: inline-block;
-      top: 1px;
-      @include transition(all 0.4s ease-in-out);
+    span {
+      font-size: 0.7em;
+
+      @media screen and (max-width: $small-device) {
+        display: none;
+      }
     }
+
+    &:hover {
+      color: $blue;
+
+      span {
+        color: #fff;
+      }
+    }
+  }
+
+  &__peers-menu {
+    @include size(3em $nav-height);
+    position: absolute;
+    text-align: center;
+    top: 0;
+    left: 1em;
+    line-height: $nav-height * 1.05;
+    cursor: pointer;
+    display: none;
+
+    @media screen and (max-width: $small-device) {
+      display: block;
+    }
+
+    i {
+      @include transition(all 0.4s ease-in-out);
+      font-size: 2em;
+      line-height: 1.5em;
+    }
+
 
     &:hover {
       i {
@@ -33,14 +66,45 @@
     }
   }
 
+  &__user {
+    @include transition(all 0.4s ease-in-out);
+    position: absolute;
+    padding: 0 3.5em 0 0.5em;
+    right: 0;
+    height: $nav-height;
+    font-size: 0.8em;
+    line-height: $nav-height + 5px;
+    cursor: pointer;
+
+    i {
+      @include transition(all 0.4s ease-in-out);
+      font-size: 2.1em;
+      position: absolute;
+      right: 0.5em;
+      display: inline-block;
+      top: 0;
+    }
+
+    &:hover {
+      i {
+        color: $blue;
+      }
+    }
+
+    @media screen and (max-width: $small-device) {
+      span {
+        display: none;
+      }
+    }
+  }
+
   &__menu {
+    @include transition(all 0.4s ease-in-out);
     position: absolute;
     top: $nav-height + 7px;
-    right: 2em;
+    right: 0.55em;
     margin: 0;
     padding: 0;
-    font-size: 0.7em;
-    @include transition(all 0.4s ease-in-out);
     display: none;
 
     &--open {
@@ -48,12 +112,16 @@
     }
 
     &:before {
+      @include triangle(10px 7px, $blue, up);
       content: '';
       display: block;
       position: absolute;
       top: -7px;
       right: 10px;
-      @include triangle(10px 7px, $blue, up);
+
+      @media screen and (max-width: $small-device) {
+        @include triangle(10px 7px, desaturate($blue, 50%), up);
+      }
     }
 
     li {
@@ -62,13 +130,42 @@
       background: $blue;
       cursor: pointer;
       border-top: 1px solid shade($blue, 10%);
+      text-align: center;
+      font-size: 0.7em;
 
       &:first-child {
         border-top: none;
       }
 
+      &.static {
+        background: desaturate($blue, 50%);
+        color: shade(#fff, 1%);
+        padding: 0.4em 2.5em 0.05em 2.5em;
+        font-size: 0.6em;
+      }
+
+      &.small-device{
+        display: none;
+      }
+
       &:hover {
         background: saturate($slate, 30%);
+
+        &.static {
+          background: desaturate($blue, 20%);
+        }
+      }
+
+      @media screen and (max-width: $small-device) {
+        font-size: 1.5em;
+
+        &.small-device{
+          display: block;
+        }
+
+        &.static {
+          font-size: 1.1em;
+        }
       }
     }
   }

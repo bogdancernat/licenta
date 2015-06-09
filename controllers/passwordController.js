@@ -11,6 +11,8 @@ exports.hashPassword = function (password) {
 };
 
 exports.validateHash = function (hash, password) {
+  if (typeof password === 'undefined') return false;
+
   var salt = hash.substr(0, saltLength);
   var validHash = salt + makeHash(password + salt);
 

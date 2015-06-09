@@ -53,17 +53,24 @@ input[disabled="disabled"] {
   }
 
   .error-label {
-    text-transform: uppercase;
+    background: rgba($error-color, 0.8);
     font-size: 0.7em;
     font-weight: 400;
-    color: $error-color;
+    padding: 0.5em;
+    color: #fff;
+    display: block;
+    text-align: center;
+    text-transform: uppercase;
   }
 
   .message-label {
     text-transform: uppercase;
+    background: rgba($info-color, 0.8);
     font-size: 0.7em;
     font-weight: 400;
-    color: $info-color;
+    padding: 0.5em;
+    color: #fff;
+    text-align: center;
   }
 
   &.has-error {

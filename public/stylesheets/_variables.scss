@@ -17,7 +17,7 @@ $orange: #EB6841;
 $yellow: #EDC951;
 $green: #C7F464;
 $slate: #556270;
-
+$sexy-slate: saturate($slate, 30%);
 
 $error-color: lighten($red, 10%);
 $info-color: lighten($blue, 10%);
@@ -33,5 +33,9 @@ $font-mono: 'Aaargh';
 
 $nav-height: 40px;
 
-$self-color: desaturate($green, 15%);
+$self-color: shade(desaturate($green, 15%), 20%);
 $receiver-color: $blue;
+
+$normal-device: 1024px;
+$small-device: 780px;
+$mobile-device: 500px;
