@@ -68,7 +68,7 @@ $chat-messages-input-height: 70px;
         width: 100%;
 
         a {
-          color: #fff;
+          color: desaturate($red, 20%);
         }
       }
 

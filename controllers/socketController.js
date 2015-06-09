@@ -1,5 +1,4 @@
 var crypto = require('crypto')
-, Alias    = require('../models/alias')
 , Room     = require('../models/room')
 , config   = require('../config')
 , twilio   = require('twilio')(config.twilio.sid, config.twilio.auth_token)

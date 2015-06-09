@@ -6,9 +6,6 @@ var express     = require('express')
 , bodyParser    = require('body-parser')
 
 , session       = require('express-session')
-, flash         = require('express-flash')
-// , passport      = require('passport')
-// , LocalStrategy = require('passport-local').Strategy
 , config        = require('./config')
 , MongoStore    = require('connect-mongo')({ session: session })
 , mongoose      = require('mongoose')
@@ -40,7 +37,6 @@ app.use(session({
   })
 }));
 
-app.use(flash());
 
 mongoose.connect(config.db);
 mongoose.connection.on('error', function () {

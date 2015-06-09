@@ -39,6 +39,10 @@ angular.module('bounceApp')
           time: (new Date).getTime()
         };
 
+        $socket.emit('new-message', socketData);
+
+        socketData.text = parseMessage(socketData.text);
+
         if (!this.messages.receiver) {
           $scope.messages.room.push(socketData);
         } else {
@@ -48,8 +52,6 @@ angular.module('bounceApp')
 
           $scope.messages.private[socketData.receiver].push(socketData);
         }
-
-        $socket.emit('new-message', socketData);
 
         this.chatMessage = null;
       }
