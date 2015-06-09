@@ -1,1 +1,1 @@
-### Bounce your messages & files to all your devices;
+### WebRTC video call application.
