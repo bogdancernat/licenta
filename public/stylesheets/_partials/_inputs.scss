@@ -71,6 +71,7 @@ input[disabled="disabled"] {
     padding: 0.5em;
     color: #fff;
     text-align: center;
+    display: block;
   }
 
   &.has-error {

@@ -20,11 +20,11 @@ server.on('listening', onListening);
 /* socket.io init */
 io = require('socket.io')(server);
 
- io.adapter(ioMongo({
-  host: config.socketAdapter.host,
-  port: config.socketAdapter.port,
-  db: config.socketAdapter.db
-}));
+// io.adapter(ioMongo({
+//   host: config.socketAdapter.host,
+//   port: config.socketAdapter.port,
+//   db: config.socketAdapter.db
+// }));
 
 io.on('connection', socketController.connection);
 
