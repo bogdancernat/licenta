@@ -98,6 +98,20 @@
     <button class="end-call" ng-click="endCall()"><i class="ion-ios-telephone"></i></button>
   </div>
 
+  <div class="overlay overlay--connection-lost" ng-if="connectionLost">
+    <div>
+      <h2>Lost connection with the server</h2>
+      <h3>waiting to reconnect</h3>
+      <div class="spinner">
+        <div class="spinner__rect spinner__rect--1"></div>
+        <div class="spinner__rect spinner__rect--2"></div>
+        <div class="spinner__rect spinner__rect--3"></div>
+        <div class="spinner__rect spinner__rect--4"></div>
+        <div class="spinner__rect spinner__rect--5"></div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 

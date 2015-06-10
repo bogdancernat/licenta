@@ -10,4 +10,21 @@
   &--call {
 
   }
+
+  &--call-init {
+    @include display(flex);
+    align-items: center;
+    justify-content: center;
+  }
+
+  &--connection-lost {
+    @include display(flex);
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+
+    h2, h3 {
+      margin: 0.2em;
+    }
+  }
 }

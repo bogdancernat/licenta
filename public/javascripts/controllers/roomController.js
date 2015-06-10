@@ -12,6 +12,7 @@ angular.module('bounceApp')
   .controller('RoomController', function ($scope, $rootScope, $location, $routeParams, $socket, $localStorage, nav) {
     $scope.alias = null;
     $scope.peers = [];
+    $scope.connectionLost = false;
 
     $rootScope.nav = nav;
 
@@ -83,6 +84,23 @@ angular.module('bounceApp')
           room: $scope.room.name,
           alias: $scope.alias.name
         });
+
+        $socket.once('disconnect', function () {
+          $scope.connectionLost = true;
+          $scope.peers = [];
+          $scope.$broadcast('connection-lost');
+          $socket.once('connect', function () {
+            $scope.$broadcast('connection-back');
+            $scope.connectionLost = false;
+            $socket.emit('join-room', {
+              room: $scope.room.name,
+              alias: $scope.alias.name,
+              password: $scope.room.password
+            });
+
+          });
+        })
+
       }
     });
 

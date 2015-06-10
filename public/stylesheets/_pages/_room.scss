@@ -501,12 +501,6 @@ $chat-messages-input-height: 70px;
   }
 }
 
-.overlay--call-init {
-  @include display(flex);
-  align-items: center;
-  justify-content: center;
-}
-
 .calling-box {
   @include user-select(none);
   width: 95vw;

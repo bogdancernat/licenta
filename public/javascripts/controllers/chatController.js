@@ -33,6 +33,15 @@ angular.module('bounceApp')
     $scope.switchToRoomChat = switchToRoomChat;
     $scope.privateChat      = privateChat;
 
+    $scope.$on('connection-lost', function () {
+      console.log('lost connection');
+      killCall();
+      switchToRoomChat();
+    });
+
+    $scope.$on('connection-back', function () {
+      console.log('got connection back');
+    });
 
     $scope.sendMessage = function () {
       if (this.chatMessage) {
