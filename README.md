@@ -34,8 +34,9 @@ Urmatorii pasi pentru instalare sunt:
 
 
 ###Limitari
-Aplicatia a fost testata pe __Google Chrome v.43__, __Firefox v.38__, __Firefox v.40.0a2__.
+Aplicatia a fost testata pe __Google Chrome v.43__ (Desktop / Android), __Firefox v.38__ (Desktop / Android), __Firefox v.40.0a2__.
 Safari si iOS nu suporta inca WebRTC fara instalarea unor plug-ins aditionale.
+
 
 Exista posibilitatea ca in cazul in care apelul se face de pe aceeasi retea interna, pe __Firefox__ conexiunea catre celalalt peer sa nu se poata realiza cu succes.
 ###Important
