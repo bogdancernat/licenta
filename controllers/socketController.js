@@ -124,7 +124,7 @@ exports.connection = function (socket) {
               }
 
               if (existingAlias) {
-                socketResponse.error = "Alias already exists in room, please choose another.";
+                socketResponse.error = "Someone is already using this alias in this room.";
               } else {
                 room.peers.push({
                   sid: socket.id,
