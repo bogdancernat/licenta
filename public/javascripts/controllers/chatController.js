@@ -18,6 +18,11 @@ angular.module('bounceApp')
       receiver: null
     };
 
+    $scope.unreadMessages = {
+      room: 0,
+      private: []
+    };
+
     $scope.call = null;
 
     $scope.initiateCall = initiateCall_step1;
@@ -62,12 +67,26 @@ angular.module('bounceApp')
 
       if (!message.receiver) {
         $scope.messages.room.push(message);
+
+        if ($scope.messages.receiver) {
+          // involved in private chat, add notifications for room
+          $scope.unreadMessages.room++;
+        }
       } else {
         if (typeof $scope.messages.private[message.alias] === 'undefined') {
           $scope.messages.private[message.alias] = [];
         }
 
         $scope.messages.private[message.alias].push(message);
+
+        if ($scope.messages.receiver !== message.alias) {
+          // we are talking with someone else, add notification
+          if (typeof $scope.unreadMessages.private[message.alias] === 'undefined') {
+            $scope.unreadMessages.private[message.alias] = 0;
+          }
+
+          $scope.unreadMessages.private[message.alias]++;
+        }
       }
     });
 
@@ -162,11 +181,17 @@ angular.module('bounceApp')
     function switchToRoomChat() {
       $scope.messages.receiver = null;
       nav.states.peersMenuIsOpen = false;
+      // about to see new messages, delete notifications
+      $scope.unreadMessages.room = 0;
     }
 
     function privateChat (peer) {
       $scope.messages.receiver = peer;
       nav.states.peersMenuIsOpen = false;
+
+      if (typeof $scope.unreadMessages.private[peer] !== 'undefined') {
+        $scope.unreadMessages.private[peer] = 0;
+      }
     }
 
     function parseMessage (message) {
@@ -232,7 +257,7 @@ angular.module('bounceApp')
 
           $scope.$apply();
         }, function (error) {
-          console.error(error);
+          // console.error(error);
         });
       });
     }
@@ -389,7 +414,7 @@ angular.module('bounceApp')
       try {
         $scope.call.connection.close();
       } catch (e) {
-        console.error(e);
+        // console.error(e);
       }
 
       try {

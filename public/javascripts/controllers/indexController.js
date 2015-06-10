@@ -42,7 +42,7 @@ angular.module('bounceApp')
 
     $socket.on('check-room:response', function (data) {
       $scope.room.error = data.error;
-      $scope.room.message = data.message;
+      // $scope.room.message = data.message;
       $scope.room.requiresPassword = data.requiresPassword;
     });
 
@@ -51,7 +51,7 @@ angular.module('bounceApp')
 
       if (data.error) {
         $scope.room.error = data.error;
-        $scope.room.message = null;
+        // $scope.room.message = null;
       } else {
         $localStorage.alias.name = $scope.alias.name;
         $location.path('/room/' + $scope.room.name);

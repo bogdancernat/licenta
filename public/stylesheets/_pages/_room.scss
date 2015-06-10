@@ -205,6 +205,23 @@ $chat-messages-input-height: 70px;
         margin-top: 0;
       }
 
+      .unread-messages {
+        @include size($item-height * 0.6);
+        display: block;
+        position: absolute;
+        line-height: $item-height * 0.6;
+        top: $item-height * 0.2;
+        right: 1em;
+        background: shade($blue, 20%);
+        color: shade(#fff, 10%);
+        border: 1px solid shade($blue, 10%);
+        border-radius: 50%;
+        padding: 0 0.5em;
+        font-size: 0.8em;
+        overflow: hidden;
+        text-align: center;
+      }
+
       .peer-name {
         @include transition(all 0.4s ease-in-out);
         @include size(100% $item-height);
@@ -213,7 +230,7 @@ $chat-messages-input-height: 70px;
         line-height: $item-height * 1.1;
         color: lighten($slate, 30%);
         color: #fff;
-        display: block;
+        position: relative;
       }
 
       $controls-height: $item-height;
@@ -311,6 +328,11 @@ $chat-messages-input-height: 70px;
         border-color: shade($sexy-slate, 20%);
         margin-bottom: 10px;
 
+        .unread-messages {
+          background: shade($sexy-slate, 20%);
+          border-color: shade($sexy-slate, 10%);
+          // color:
+        }
         .peer-name {
           color: #fff;
         }
@@ -318,8 +340,9 @@ $chat-messages-input-height: 70px;
 
       &--active {
         // background: desaturate($green, 30%);
-        border-bottom-color: $green;
-        border-bottom-width: 3px;
+        border-left-color: desaturate($red, 10%);;
+        border-left-width: 10px;
+
         .peer-name {
           color: #fff;
         }

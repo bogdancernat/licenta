@@ -179,10 +179,18 @@ exports.connection = function (socket) {
   });
 
   socket.on('greet-peer', function (data) {
-    if (data.sidPeer && data.ownAlias) {
-      socket.to(data.sidPeer).emit('peer-said-hi', {alias: data.ownAlias});
+    if (data.room && data.ownAlias && data.alias) {
+      socket.to(data.alias + ':' + data.room).emit('peer-said-hi', {alias: data.ownAlias});
     }
   });
+
+
+  socket.on('hi-guys', function (data) {
+    if (data.alias && data.room) {
+      socket.broadcast.to(data.room).emit('someone-saying-hi', data);
+    }
+  });
+
   // handling data
 
   socket.on('new-message', function (message) {
@@ -230,7 +238,6 @@ exports.connection = function (socket) {
       socket.emit('rtc-ice-servers:response', socketResponse);
     })
   });
-
 
   socket.on('send-ice-candidate', function (data) {
     ioScope.to(data.peer + ':' + data.room).emit('send-ice-candidate:response', data);

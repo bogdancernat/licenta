@@ -78,6 +78,11 @@ angular.module('bounceApp')
         $scope.room.message = null;
       } else {
         $scope.roomJoined = true;
+
+        $socket.emit('hi-guys', {
+          room: $scope.room.name,
+          alias: $scope.alias.name
+        });
       }
     });
 
@@ -87,9 +92,18 @@ angular.module('bounceApp')
       }
 
       $socket.emit('greet-peer', {
-        sidPeer: data.sid,
+        room: data.room,
+        alias: data.alias,
         ownAlias: $scope.alias.name
-      })
+      });
+    });
+
+    $socket.on('someone-saying-hi', function (data) {
+      $socket.emit('greet-peer', {
+        room: data.room,
+        alias: data.alias,
+        ownAlias: $scope.alias.name
+      });
     });
 
     $socket.on('peer-said-hi', function (data) {
@@ -97,6 +111,13 @@ angular.module('bounceApp')
         $scope.peers.push(data.alias);
       }
     });
+
+    if ($scope.roomJoined) {
+      $socket.emit('hi-guys', {
+        room: $scope.room.name,
+        alias: $scope.alias.name
+      });
+    }
 
     $socket.on('peer-left', function (data) {
       if ($scope.peers.indexOf(data.alias) !== -1) {

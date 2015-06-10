@@ -43,13 +43,13 @@
   <div class="peers-wrapper" ng-class="{'peers-wrapper--open': nav.states.peersMenuIsOpen}">
     <div class="peers-wrapper__list">
       <div class="peers-wrapper__list__item peers-wrapper__list__item--room">
-        <span class="peer-name">Room Chat</span>
+        <div class="peer-name">Room Chat <span class="unread-messages" ng-if="unreadMessages.room">{{unreadMessages.room}}</span></div>
         <div class="peer-controls">
           <div class="peer-controls__action peer-controls__action--chat" ng-click="switchToRoomChat()"><i class="ion-ios-chatbubble"></i><span>Switch to room chat</span></div>
         </div>
       </div>
       <div class="peers-wrapper__list__item" ng-repeat="peer in peers | filter:peerFilter | orderBy: peer" ng-class="{'peers-wrapper__list__item--active': messages.receiver === peer}">
-        <span class="peer-name">{{peer}}</span>
+        <div class="peer-name">{{peer}} <span class="unread-messages" ng-if="unreadMessages.private[peer]">{{unreadMessages.private[peer]}}</span></div>
         <div class="peer-controls">
           <div class="peer-controls__action peer-controls__action--call" ng-click="initiateCall(peer)"><i class="ion-ios-telephone"></i><span>Call</span></div>
           <!-- <div class="peer-controls__action peer-controls__action--transfer" ng-click="sendFile()"><i class="ion-document"></i><span>Send File</span></div> -->
