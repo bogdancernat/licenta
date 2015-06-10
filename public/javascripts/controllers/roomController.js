@@ -79,6 +79,7 @@ angular.module('bounceApp')
         $scope.room.message = null;
       } else {
         $scope.roomJoined = true;
+        $localStorage.alias = {name: $scope.alias.name};
 
         $socket.emit('hi-guys', {
           room: $scope.room.name,
@@ -89,18 +90,18 @@ angular.module('bounceApp')
           $scope.connectionLost = true;
           $scope.peers = [];
           $scope.$broadcast('connection-lost');
+
           $socket.once('connect', function () {
-            $scope.$broadcast('connection-back');
             $scope.connectionLost = false;
+            $scope.$broadcast('connection-back');
+
             $socket.emit('join-room', {
               room: $scope.room.name,
               alias: $scope.alias.name,
               password: $scope.room.password
             });
-
           });
         })
-
       }
     });
 
