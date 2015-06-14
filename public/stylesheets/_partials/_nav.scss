@@ -11,6 +11,7 @@
 
   &__section {
     @include flex(1);
+    position: relative;
   }
 
   &__room {
@@ -36,6 +37,38 @@
         color: #fff;
       }
     }
+  }
+
+  &__room-popout {
+    position: absolute;
+    background: $blue;
+    width: 400px;
+    height: 50px;
+    top: $nav-height + 7px;
+    left: 50%;
+    margin-left: -200px;
+
+    &:before {
+      @include triangle(10px 7px, $blue, up);
+      content: '';
+      display: block;
+      position: absolute;
+      top: -7px;
+      left: 50%;
+      margin-left: -5px;
+    }
+
+    @media screen and (max-width: $small-device) {
+      width: 95vw;
+      margin-left: -47.5vw;
+    }
+
+    .big-input {
+      height: 50px;
+      line-height: 60px;
+      font-size: 1.1em;
+    }
+
   }
 
   &__peers-menu {
@@ -167,6 +200,11 @@
           font-size: 1.1em;
         }
       }
+    }
+
+    @media screen and (max-width: $small-device) {
+      width: 95vw;
+      right: 2.5vw;
     }
   }
 }

@@ -4,7 +4,8 @@
   </div>
 
   <div class="main-nav__section">
-    <div class="main-nav__room"><span>Current room: </span>{{room.name}}</div>
+    <div class="main-nav__room" ng-click="nav.toggleRoomUrl()"><span>Current room: </span>{{room.name}}</div>
+    <div class="main-nav__room-popout" ng-if="nav.states.roomUrlIsOpen"><input type="text" ng-model="roomURL" class="big-input" autofocus></div>
   </div>
 
   <div class="main-nav__section">

@@ -13,7 +13,7 @@ angular.module('bounceApp')
     $scope.alias = null;
     $scope.peers = [];
     $scope.connectionLost = false;
-
+    $scope.roomURL = $location.absUrl();
     $rootScope.nav = nav;
 
     if (!$scope.alias) {
