@@ -474,6 +474,31 @@ $chat-messages-input-height: 70px;
     }
   }
 
+  $toggle-mic-size: 40px;
+  .toggle-microphone {
+    @include transition(all 0.4s ease-in-out);
+    @include size($toggle-mic-size);
+    border-radius: 50%;
+    position: absolute;
+    display: block;
+    background: #fff;
+    bottom: 0.95em;
+    line-height: 38px;
+    right: 50%;
+    margin-right: -$toggle-mic-size/2 - $end-call-size - 20px;
+    font-size: 1.3em;
+    border: 2px solid shade(#fff, 20%);
+    z-index: 300;
+    color: $text-dark;
+
+    &--muted {
+      background: desaturate($red, 20%);
+      border-color: shade($red, 20%);
+      color: #fff;
+    }
+
+  }
+
   &.fullscreen {
     .video-wrapper {
 

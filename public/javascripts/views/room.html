@@ -97,6 +97,7 @@
     </div>
 
     <button class="end-call" ng-click="endCall()"><i class="ion-ios-telephone"></i></button>
+    <button class="toggle-microphone" ng-class="{'toggle-microphone--muted': call.microphoneMuted}" ng-click="toggleMicrophone()"><i class="ion-android-microphone" ng-class="{'ion-android-microphone-off': call.microphoneMuted}"></i></button>
   </div>
 
   <div class="overlay overlay--connection-lost" ng-if="connectionLost">

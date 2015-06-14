@@ -71,6 +71,8 @@ angular.module('bounceApp')
       }
     };
 
+    $scope.toggleMicrophone = toggleMicrophone;
+
     $socket.on('new-message', function (message) {
       message.text = parseMessage(message.text);
 
@@ -418,6 +420,15 @@ angular.module('bounceApp')
       }
     }
 
+    function toggleMicrophone () {
+      var audioTracks = $scope.call.self.stream.getAudioTracks();
+
+      for (var i = 0, l = audioTracks.length; i < l; i++) {
+        audioTracks[i].enabled = !audioTracks[i].enabled;
+      }
+
+      $scope.call.microphoneMuted = !$scope.call.microphoneMuted;
+    }
 
     function killCall () {
       try {
@@ -455,6 +466,7 @@ angular.module('bounceApp')
         connection: null,
         waiting: false,
         busy: false,
+        microphoneMuted: false,
         outgoing: false,
         incoming: false,
         inProgress: false,
