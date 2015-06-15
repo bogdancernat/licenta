@@ -9,7 +9,7 @@
  */
 
 angular.module('bounceApp')
-  .controller('ChatController', function ($scope, $timeout, $rootScope, $routeParams, $location, $socket, $localStorage, nav) {
+  .controller('ChatController', function ($scope, $timeout, $rootScope, $routeParams, $location, $socket, $localStorage, nav, scroll) {
     $scope.chatMessage = null;
 
     $scope.messages = {
@@ -43,6 +43,10 @@ angular.module('bounceApp')
       console.log('got connection back');
     });
 
+    $(window).resize(function (){
+      scroll.refreshChatScroll();
+    });
+
     $scope.sendMessage = function () {
       if (this.chatMessage) {
         var socketData = {
@@ -66,6 +70,8 @@ angular.module('bounceApp')
 
           $scope.messages.private[socketData.receiver].push(socketData);
         }
+
+        scroll.refreshChatScroll();
 
         this.chatMessage = null;
       }
@@ -99,6 +105,10 @@ angular.module('bounceApp')
           $scope.unreadMessages.private[message.alias]++;
         }
       }
+
+      $timeout(function () {
+        scroll.refreshChatScroll();
+      }, 50);
     });
 
     $scope.$on('leaving-room', function (event, peer) {
@@ -194,6 +204,9 @@ angular.module('bounceApp')
       nav.states.peersMenuIsOpen = false;
       // about to see new messages, delete notifications
       $scope.unreadMessages.room = 0;
+      $timeout(function () {
+        scroll.initChatScroll();
+      }, 50);
     }
 
     function privateChat (peer) {
@@ -203,6 +216,10 @@ angular.module('bounceApp')
       if (typeof $scope.unreadMessages.private[peer] !== 'undefined') {
         $scope.unreadMessages.private[peer] = 0;
       }
+
+      $timeout(function () {
+        scroll.initChatScroll();
+      }, 50);
     }
 
     function parseMessage (message) {

@@ -9,7 +9,7 @@
  */
 
 angular.module('bounceApp')
-  .controller('RoomController', function ($scope, $rootScope, $location, $routeParams, $socket, $localStorage, nav) {
+  .controller('RoomController', function ($scope, $rootScope, $location, $routeParams, $socket, $localStorage, nav, scroll) {
     $scope.alias = null;
     $scope.peers = [];
     $scope.connectionLost = false;
@@ -51,8 +51,6 @@ angular.module('bounceApp')
 
     $scope.checkRoom = checkRoom;
     $scope.joinRoom = joinRoom;
-
-
 
     $scope.leaveRoom = function () {
       $socket.emit('leave-room', {room: $rootScope.room.name});

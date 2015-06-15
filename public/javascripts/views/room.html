@@ -34,6 +34,11 @@
           <div class="chat-wrapper__messages__line__message" ng-bind-html="message.text"></div>
         </div>
       </div>
+      <div class="chat-wrapper__messages__scrollbar">
+        <div class="chat-wrapper__messages__scrollbar__handle">
+          <span></span>
+        </div>
+      </div>
     </div>
     <div class="chat-wrapper__input">
       <textarea id="" ng-model="chatMessage" ng-enter="sendMessage()"></textarea>
@@ -49,6 +54,7 @@
           <div class="peer-controls__action peer-controls__action--chat" ng-click="switchToRoomChat()"><i class="ion-ios-chatbubble"></i><span>Switch to room chat</span></div>
         </div>
       </div>
+      <div class="peers-wrapper__list__alert" ng-if="!peers.length">You are alone in this room</div>
       <div class="peers-wrapper__list__item" ng-repeat="peer in peers | filter:peerFilter | orderBy: peer" ng-class="{'peers-wrapper__list__item--active': messages.receiver === peer}">
         <div class="peer-name">{{peer}} <span class="unread-messages" ng-if="unreadMessages.private[peer]">{{unreadMessages.private[peer]}}</span></div>
         <div class="peer-controls">

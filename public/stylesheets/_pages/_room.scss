@@ -34,12 +34,41 @@ $chat-messages-input-height: 70px;
     overflow: hidden;
     position: relative;
 
+
+    &__scrollbar {
+      @include size(1px 94%);
+      position: absolute;
+      right: 1px;
+      top: 3%;
+      background: rgba($slate, 0.3);
+
+
+      &__handle {
+        @include size(3px 100%);
+        position: absolute;
+        top: 0;
+        left: -1px;
+        background: rgba($sexy-slate, 1);
+        cursor: pointer;
+
+        span {
+          @include size(21px 100%);
+          position: absolute;
+          top: 0;
+          left: -10px;
+          display: block;
+        }
+      }
+    }
+
     &__lines {
+      @include calc(min-height, "100vh - #{$chat-messages-input-height + $nav-height}");
       position: absolute;
       overflow: auto;
-      bottom: 0;
+      // bottom: 0;
       left: 0;
       width: 100%;
+
     }
 
     &__line {
@@ -191,6 +220,16 @@ $chat-messages-input-height: 70px;
     overflow: auto;
 
     $item-height: 40px;
+
+    &__alert {
+      @include user-select(none);
+      @include size(95% auto);
+      padding: 0.5em 1em;
+      background: desaturate($red, 10%);
+      margin: 4px auto auto auto;
+      color: #fff;
+      font-size: 0.8em;
+    }
 
     &__item {
       @include size(95% $item-height);

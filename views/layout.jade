@@ -28,7 +28,7 @@ html
   body(ng-app="bounceApp")
     div(ng-view="")
 
-  //- script(src="/bower_components/jquery/dist/jquery.js")
+  script(src="/bower_components/jquery/dist/jquery.js")
   //- script(src="/bower_components/webrtc-adapter/adapter.js")
   script(src="/javascripts/adapter.debug.js")
   script(src="/bower_components/angular/angular.min.js")
@@ -40,6 +40,7 @@ html
   script(src="/bower_components/angular-route/angular-route.min.js")
   script(src="/bower_components/angular-sanitize/angular-sanitize.min.js")
   script(src="/bower_components/ngstorage/ngStorage.min.js")
+  script(src="/javascripts/sly.min.js")
   script(src="/socket.io/socket.io.js")
   script(src="/javascripts/ng-socket.js")
 
@@ -52,6 +53,7 @@ html
 
   //- angular services
   script(src="/javascripts/services/nav.js")
+  script(src="/javascripts/services/scroll.js")
 
   //- angular directives
   script(src="/javascripts/directives/ngEnter.js")
