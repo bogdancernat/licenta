@@ -68,6 +68,9 @@ $chat-messages-input-height: 70px;
       left: 0;
       width: 100%;
 
+      &--private {
+        padding-top: 35px;
+      }
     }
 
     &__line {
@@ -115,26 +118,26 @@ $chat-messages-input-height: 70px;
       &--receiver {
         background-color: rgba(#fff, 0.9);
 
-        &:after {
-          clear: both;
-          display: block;
-          content: '';
-        }
+        // &:after {
+        //   clear: both;
+        //   display: block;
+        //   content: '';
+        // }
 
         #{$lineRoot}__alias {
           color: $blue;
-          float: right;
+          // float: right;
         }
 
         #{$lineRoot}__timestamp {
-          float: right;
-          margin-right: 5px;
+          // float: right;
+          // margin-right: 5px;
         }
 
         #{$lineRoot}__message {
           color: $text-dark;
-          float: right;
-          text-align: right;
+          // float: right;
+          // text-align: right;
         }
       }
     }

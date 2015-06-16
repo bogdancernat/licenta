@@ -21,7 +21,7 @@
   <div class="chat-wrapper">
     <div class="chat-wrapper__alert" ng-if="messages.receiver">You are now chatting with {{messages.receiver}}</div>
     <div class="chat-wrapper__messages">
-      <div class="chat-wrapper__messages__lines">
+      <div class="chat-wrapper__messages__lines" ng-class="{'chat-wrapper__messages__lines--private': messages.receiver}">
         <div class="chat-wrapper__messages__line" ng-repeat="message in messages.room" ng-class="{'chat-wrapper__messages__line--receiver': message.alias !== alias.name, 'chat-wrapper__messages__line--self': message.alias === alias.name}" ng-if="!messages.receiver">
           <div class="chat-wrapper__messages__line__alias">{{message.alias}}</div>
           <div class="chat-wrapper__messages__line__timestamp" am-time-ago="message.time"></div>
