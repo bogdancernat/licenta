@@ -71,9 +71,11 @@ angular.module('bounceApp')
           $scope.messages.private[socketData.receiver].push(socketData);
         }
 
-        scroll.refreshChatScroll();
-
         this.chatMessage = null;
+
+        $timeout(function () {
+          scroll.refreshChatScroll();
+        }, 50);
       }
     };
 
@@ -223,7 +225,7 @@ angular.module('bounceApp')
     }
 
     function parseMessage (message) {
-      var urlRegex = /(([a-z]+:\/\/)?(([a-z0-9\-]+\.)+([a-z]{2}|aero|arpa|biz|com|coop|edu|gov|info|int|jobs|mil|museum|ninja|name|nato|net|org|pro|travel|local|internal))(:[0-9]{1,5})?(\/[a-z0-9_\-\.~]+)*(\/([a-z0-9_\-\.]*)(\?[a-z0-9+_\-\.%=&amp;]*)?)?(#[a-zA-Z0-9!$&'()*+.=-_~:@/?]*)?)(\s+|$)/gi
+      var urlRegex = /(([a-z]+:\/\/)?(([a-z0-9\-]+\.)+([a-z]{2}|aero|arpa|biz|com|coop|edu|gov|info|int|jobs|mil|museum|ninja|name|nato|net|org|pro|travel|local|internal))(:[0-9]{1,5})?(\/[a-z0-9_\-\.~]+)*(\/([a-z0-9_\-\.]*)(\?[a-z0-9+_\-\.%=&amp;]*)?)?(#[a-zA-Z0-9!$&'()*+.=-_~:@\/?]*)?)(\s+|$)/gi
 
       message = sanitizeStr(message);
 

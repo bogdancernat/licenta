@@ -45,7 +45,7 @@ angular.module('bounceApp')
       if (chatSly) {
         var goToEnd = false;
 
-        if (chatSly.pos.cur === chatSly.pos.end) {
+        if (chatSly.pos.cur > chatSly.pos.end - 60) {
           goToEnd = true;
         }
 
