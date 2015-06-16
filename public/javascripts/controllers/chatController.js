@@ -228,7 +228,7 @@ angular.module('bounceApp')
       var urlRegex = /(([a-z]+:\/\/)?(([a-z0-9\-]+\.)+([a-z]{2}|aero|arpa|biz|com|coop|edu|gov|info|int|jobs|mil|museum|ninja|name|nato|net|org|pro|travel|local|internal))(:[0-9]{1,5})?(\/[a-z0-9_\-\.~]+)*(\/([a-z0-9_\-\.]*)(\?[a-z0-9+_\-\.%=&amp;]*)?)?(#[a-zA-Z0-9!$&'()*+.=-_~:@\/?]*)?)(\s+|$)/gi
 
       message = sanitizeStr(message);
-
+      message = message.replace(/\r?\n/g, '<br />');
       // convert possible links to actual links
       message = message.replace(urlRegex, function (url) {
         var link;
