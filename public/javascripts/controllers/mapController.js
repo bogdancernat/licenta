@@ -58,6 +58,7 @@ angular.module('bounceApp')
         if (marker) {
           marker.setMap(null);
           marker = null;
+          $('.map__search').val('');
           this.locationToShare = null;
         }
       }
@@ -84,7 +85,6 @@ angular.module('bounceApp')
       });
 
       var input = document.querySelector('.map__search');
-      // map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
       searchBox = new google.maps.places.SearchBox(input);
 
