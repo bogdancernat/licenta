@@ -67,6 +67,7 @@
         <div class="action action--location" ng-controller="MapController" ng-click="toggleMap()" ng-class="{open: mapIsVisible}">
           <i class="ion-ios-location"></i>Share location
           <div class="map" ng-click="$event.stopPropagation();">
+            <input class="map__search" type="text" placeholder="Search location" ng-show="mapIsLoaded">
             <div class="map__canvas">
               <div class="spinner">
                 <div class="spinner__rect spinner__rect--1"></div>

@@ -12,6 +12,7 @@ angular.module('bounceApp')
   .controller('MapController', function ($scope, $routeParams, $location, $socket, $localStorage) {
     $scope.mapIsVisible = false;
     $scope.locationToShare = null;
+    $scope.mapIsLoaded = false;
 
     var map
     , mapOptions = {
@@ -20,8 +21,11 @@ angular.module('bounceApp')
           lng: 27.590278
         },
         zoom: 16,
-        panControl: true,
+        panControl: false,
         zoomControl: true,
+        zoomControlOptions: {
+          position: google.maps.ControlPosition.LEFT_CENTER
+        },
         mapTypeControl: false,
         scaleControl: true,
         streetViewControl: false,
@@ -29,7 +33,8 @@ angular.module('bounceApp')
         mapTypeId: google.maps.MapTypeId.ROADMAP
       }
     , geolocation = null
-    , marker = null
+    , marker      = null
+    , searchBox   = null
     ;
 
     $scope.toggleMap = function () {
@@ -77,6 +82,49 @@ angular.module('bounceApp')
       google.maps.event.addListener(map, 'click', function (event) {
         setMarker(event.latLng);
       });
+
+      var input = document.querySelector('.map__search');
+      // map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+      searchBox = new google.maps.places.SearchBox(input);
+
+      google.maps.event.addListener(searchBox, 'places_changed', function() {
+        var places = searchBox.getPlaces();
+
+        if (places.length == 0) {
+          return;
+        }
+
+        if (marker) {
+          marker.setMap(null);
+          marker = null;
+        }
+
+        // get first place
+        if (places.length) {
+          var place = places[0];
+
+          if (!marker) {
+            marker = new google.maps.Marker({
+              position: place.geometry.location,
+              map: map
+            });
+
+            $scope.locationToShare = place.geometry.location;
+            $scope.$apply();
+          }
+          map.setCenter(place.geometry.location);
+        }
+
+      });
+
+      google.maps.event.addListener(map, 'bounds_changed', function() {
+        var bounds = map.getBounds();
+        searchBox.setBounds(bounds);
+      });
+
+      $scope.mapIsLoaded = true;
+      $scope.$apply();
     }
 
     function setMarker (latLng) {
