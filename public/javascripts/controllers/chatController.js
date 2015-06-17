@@ -50,6 +50,7 @@ angular.module('bounceApp')
     $scope.sendMessage = function () {
       if (this.chatMessage) {
         var socketData = {
+          type: 'text',
           text: this.chatMessage,
           alias: $scope.alias.name,
           room: $scope.room.name,
@@ -79,10 +80,40 @@ angular.module('bounceApp')
       }
     };
 
+    $scope.$on('send-location-message', function (event, location) {
+      var socketData = {
+        type: 'location',
+        url: 'https://www.google.com/maps/dir//' + location.lat + ',' + location.lng + '/@' + location.lat + ',' + location.lng + ',15z',
+        location: location,
+        alias: $scope.alias.name,
+        room: $scope.room.name,
+        receiver: $scope.messages.receiver,
+        time: (new Date).getTime()
+      };
+
+      $socket.emit('new-message', socketData);
+
+      if (!$scope.messages.receiver) {
+        $scope.messages.room.push(socketData);
+      } else {
+        if (typeof $scope.messages.private[socketData.receiver] === 'undefined') {
+          $scope.messages.private[socketData.receiver] = [];
+        }
+
+        $scope.messages.private[socketData.receiver].push(socketData);
+      }
+
+      $timeout(function () {
+        scroll.refreshChatScroll();
+      }, 50);
+    });
+
     $scope.toggleMicrophone = toggleMicrophone;
 
     $socket.on('new-message', function (message) {
-      message.text = parseMessage(message.text);
+      if (message.type === 'text') {
+        message.text = parseMessage(message.text);
+      }
 
       if (!message.receiver) {
         $scope.messages.room.push(message);

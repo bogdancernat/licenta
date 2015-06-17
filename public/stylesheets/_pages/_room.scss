@@ -1,6 +1,6 @@
 $chat-wrapper-spacing: 1vw;
 $chat-wrapper-width: 70vw;
-$chat-messages-input-height: 70px;
+$chat-messages-input-height: 100px;
 
 .chat-wrapper {
   @include calc(height, "100vh - #{$nav-height}");
@@ -103,6 +103,52 @@ $chat-messages-input-height: 70px;
         }
       }
 
+      &__location {
+        a {
+          display: block;
+          color: $text-dark;
+          @include display(flex);
+          text-decoration: none;
+
+          &:hover {
+            .location-preview {
+              background: $red;
+            }
+          }
+        }
+
+        .location-preview {
+          @include size(60px);
+          @include flex(none);
+          @include transition(all 0.4s ease-in-out);
+          background: $orange;
+          line-height: 65px;
+          font-size: 3em;
+          color: #fff;
+          text-align: center;
+        }
+
+        .coordinates {
+          @include flex(1);
+          display: block;
+          margin: 0;
+          padding: 0.8em 0.5em 0 0.5em;
+          list-style-type: none;
+          height: 60px;
+          font-size: 1em;
+
+          li {
+            strong {
+              font-size: 0.8em;
+            }
+
+            span {
+              margin-left: 0.5em;
+            }
+          }
+        }
+      }
+
       &--self {
         background-color: rgba(#fff, 0.6);
 
@@ -123,6 +169,11 @@ $chat-messages-input-height: 70px;
         //   display: block;
         //   content: '';
         // }
+        #{$lineRoot}__location {
+          .location-preview {
+            background: $blue;
+          }
+        }
 
         #{$lineRoot}__alias {
           color: $blue;
@@ -144,14 +195,148 @@ $chat-messages-input-height: 70px;
   }
 
   &__input {
-    width: 100%;
-    height: $chat-messages-input-height;
+    @include size(100% $chat-messages-input-height);
+    padding-top: 5px;
+
+    $actions-height: $chat-messages-input-height * 0.35 - 5px;
+    &__actions {
+      @include size(100% $actions-height);
+      position: relative;
+
+      .action {
+        @include user-select(none);
+        @include size(auto $chat-messages-input-height * 0.35 - 5px);
+        line-height: $chat-messages-input-height * 0.35 - 2px;
+        padding: 0 0.5em;
+        float: left;
+        background: rgba(#fff, 0.5);
+        color: $text-dark;
+        cursor: pointer;
+        display: inline-block;
+        font-size: 0.8em;
+        margin-left: 3px;
+        position: relative;
+
+        &:first-child {
+          margin-left: 0px;
+        }
+
+        i {
+          font-size: 1.4em;
+          margin-right: 5px;
+        }
+
+        &:hover {
+          background: rgba(#fff, 0.8);
+        }
+
+        &--location {
+          $triangle-height: 7px;
+          $triangle-width: 10px;
+
+          &:before {
+            position: absolute;
+            content: '';
+            @include triangle($triangle-width $triangle-height, $blue, down);
+            top: -$triangle-height;
+            left: 50%;
+            margin-left: -$triangle-width / 2;
+            display: none;
+          }
+
+          $map-size: 400px;
+          .map {
+            @include size($map-size);
+            position: absolute;
+            bottom: $actions-height + $triangle-height;
+            left: 0;
+            background: rgba($blue, 0.8);
+            display: none;
+
+            &__canvas {
+              width: 100%;
+              height: 100%;
+              position: relative;
+
+              .spinner {
+                position: absolute;
+                left: 50%;
+                margin-left: - $spinner-width/2;
+                top: 50%;
+                margin-top: - $spinner-height/2;
+              }
+            }
+
+            &__controls {
+              @include size(100% 40px);
+              @include display(flex);
+              width: 100%;
+              position: absolute;
+              bottom: 0;
+
+              button {
+                @include transition(all 0.4s ease-in-out);
+                @include user-select(none);
+                @include flex(1);
+                height: 100%;
+                border: 0;
+                display: block;
+                padding: 0;
+                font-size: 1em;
+                position: relative;
+                text-transform: uppercase;
+                color: #fff;
+
+                i {
+                  display: inline-block
+                }
+
+                &.share-location {
+                  background-color: $blue;
+
+                  &:hover {
+                    background-color: $sexy-slate;
+                  }
+                }
+
+                &.cancel {
+                  background-color: $slate;
+
+                  &:hover {
+                    background-color: desaturate($red, 20%);
+                  }
+                }
+
+                &:disabled {
+                  background: desaturate($slate, 40%);
+                  display: none;
+                }
+              }
+            }
+
+            @media screen and (max-width: $mobile-device) {
+              @include calc(height, "100vh - #{$chat-messages-input-height + $nav-height - $actions-height}");
+              width: 98vw;
+
+              bottom: 0;
+            }
+          }
+
+          &.open{
+            &:before,
+            .map {
+              display: block;
+            }
+          }
+        }
+      }
+    }
 
     textarea {
       @include transition(all 0.4s ease-in-out);
       width: 90%;
-      height: $chat-messages-input-height * 0.8;
-      margin-top: $chat-messages-input-height * 0.2 - 5px;
+      height: $chat-messages-input-height * 0.6 - 3px;
+      margin-top: $chat-messages-input-height * 0.05;
       float: left;
       resize: none;
       // background-color: rgba(shade($slate, 30%), 0.7);
@@ -176,16 +361,16 @@ $chat-messages-input-height: 70px;
       }
     }
 
-    button {
+    .send-message {
       @include user-select(none);
       @include transition(all 0.4s ease-in-out);
       width: 10%;
-      height: $chat-messages-input-height * 0.8;
+      height: $chat-messages-input-height * 0.6 - 3px;
       border: 0;
       display: block;
       float: left;
       background-color: $slate;
-      margin-top: $chat-messages-input-height * 0.2 - 5px;
+      margin-top: $chat-messages-input-height * 0.05;
       padding: 0;
       font-size: 1.3em;
       position: relative;

@@ -20,19 +20,32 @@
 <div class="container container--room" ng-if="roomJoined" ng-controller="ChatController">
   <div class="chat-wrapper">
     <div class="chat-wrapper__alert" ng-if="messages.receiver">You are now chatting with {{messages.receiver}}</div>
+
     <div class="chat-wrapper__messages">
       <div class="chat-wrapper__messages__lines" ng-class="{'chat-wrapper__messages__lines--private': messages.receiver}">
+
         <div class="chat-wrapper__messages__line" ng-repeat="message in messages.room" ng-class="{'chat-wrapper__messages__line--receiver': message.alias !== alias.name, 'chat-wrapper__messages__line--self': message.alias === alias.name}" ng-if="!messages.receiver">
           <div class="chat-wrapper__messages__line__alias">{{message.alias}}</div>
           <div class="chat-wrapper__messages__line__timestamp" am-time-ago="message.time"></div>
-          <div class="chat-wrapper__messages__line__message" ng-bind-html="message.text"></div>
+          <div class="chat-wrapper__messages__line__message" ng-bind-html="message.text" ng-if="message.type === 'text'"></div>
+          <div class="chat-wrapper__messages__line__location" ng-if="message.type === 'location'">
+            <a href="{{message.url}}" target="_blank">
+              <div class="location-preview"><i class="ion-map"></i></div>
+              <ul class="coordinates">
+                <li><strong>Latitude:</strong><span>{{message.location.lat}}</span></li>
+                <li><strong>Longitude:</strong><span>{{message.location.lng}}</span></li>
+              </ul>
+            </a>
+          </div>
         </div>
 
-         <div class="chat-wrapper__messages__line" ng-repeat="message in messages.private[messages.receiver]" ng-class="{'chat-wrapper__messages__line--receiver': message.alias !== alias.name, 'chat-wrapper__messages__line--self': message.alias === alias.name}" ng-if="messages.receiver">
+        <div class="chat-wrapper__messages__line" ng-repeat="message in messages.private[messages.receiver]" ng-class="{'chat-wrapper__messages__line--receiver': message.alias !== alias.name, 'chat-wrapper__messages__line--self': message.alias === alias.name}" ng-if="messages.receiver">
           <div class="chat-wrapper__messages__line__alias">{{message.alias}}</div>
           <div class="chat-wrapper__messages__line__timestamp" am-time-ago="message.time"></div>
-          <div class="chat-wrapper__messages__line__message" ng-bind-html="message.text"></div>
+          <div class="chat-wrapper__messages__line__message" ng-bind-html="message.text" ng-if="message.type === 'text'"></div>
+          <div class="chat-wrapper__messages__line__location" ng-if="message.type === 'location'">{{message.location.lat}} {{message.location.lng}}</div>
         </div>
+
       </div>
       <div class="chat-wrapper__messages__scrollbar">
         <div class="chat-wrapper__messages__scrollbar__handle">
@@ -41,8 +54,30 @@
       </div>
     </div>
     <div class="chat-wrapper__input">
+      <div class="chat-wrapper__input__actions">
+
+        <div class="action action--location" ng-controller="MapController" ng-click="toggleMap()" ng-class="{open: mapIsVisible}">
+          <i class="ion-ios-location"></i>Share location
+          <div class="map" ng-click="$event.stopPropagation();">
+            <div class="map__canvas">
+              <div class="spinner">
+                <div class="spinner__rect spinner__rect--1"></div>
+                <div class="spinner__rect spinner__rect--2"></div>
+                <div class="spinner__rect spinner__rect--3"></div>
+                <div class="spinner__rect spinner__rect--4"></div>
+                <div class="spinner__rect spinner__rect--5"></div>
+              </div>
+            </div>
+            <div class="map__controls">
+              <button class="share-location" ng-click="shareLocation()" ng-disabled="!locationToShare">Share</button>
+              <button class="cancel" ng-click="toggleMap()">Cancel</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
       <textarea id="" ng-model="chatMessage" ng-enter="sendMessage()"></textarea>
-      <button ng-click="sendMessage()"><i class="ion-paper-airplane"></i></button>
+      <button ng-click="sendMessage()" class="send-message"><i class="ion-paper-airplane"></i></button>
     </div>
   </div>
 

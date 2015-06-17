@@ -1,6 +1,6 @@
 .spinner{
-  width: 34px;
-  height: 30px;
+  width: $spinner-width;
+  height: $spinner-height;
   // position: absolute;
   // top: 50%;
   // left: 50%;
@@ -10,7 +10,7 @@
   &__rect {
     background-color: #fff;
     height: 100%;
-    width: 6px;
+    width: ($spinner-width - 4) / 5;
     display: inline-block;
     margin-left: 1px;
     float: left;

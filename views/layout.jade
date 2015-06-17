@@ -28,6 +28,7 @@ html
   body(ng-app="bounceApp")
     div(ng-view="")
 
+  //- local dependencies
   script(src="/bower_components/jquery/dist/jquery.js")
   //- script(src="/bower_components/webrtc-adapter/adapter.js")
   script(src="/javascripts/adapter.debug.js")
@@ -44,12 +45,17 @@ html
   script(src="/socket.io/socket.io.js")
   script(src="/javascripts/ng-socket.js")
 
+  //- google maps
+  script(src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCaHVrO9hMi2yJ7iLCoM8lBm5RkUsMzDkI")
+
+  //- app
   script(src="/javascripts/app.js")
 
   //- angular controllers
   script(src="/javascripts/controllers/indexController.js")
   script(src="/javascripts/controllers/roomController.js")
   script(src="/javascripts/controllers/chatController.js")
+  script(src="/javascripts/controllers/mapController.js")
 
   //- angular services
   script(src="/javascripts/services/nav.js")
