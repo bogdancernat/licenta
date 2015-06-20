@@ -154,6 +154,19 @@ angular.module('bounceApp')
       $location.path('/');
     });
 
+    $scope.$on('peer-connected', function (event, peer) {
+      var infoMessage = {
+        type: 'info',
+        text: peer + ' has connected to the room',
+        time: (new Date).getTime()
+      };
+
+      $scope.messages.room.push(infoMessage);
+      $timeout(function () {
+        scroll.refreshChatScroll();
+      }, 50);
+    });
+
     $scope.$on('peer-left', function (event, peer) {
       if ($scope.call && $scope.call.peer.name === peer) {
         killCall();
@@ -163,6 +176,16 @@ angular.module('bounceApp')
         $scope.messages.receiver = null;
       }
 
+      var infoMessage = {
+        type: 'info',
+        text: peer + ' has disconnected from the room',
+        time: (new Date).getTime()
+      };
+
+      $scope.messages.room.push(infoMessage);
+      $timeout(function () {
+        scroll.refreshChatScroll();
+      }, 50);
     });
 
     $socket.on('send-rtc-offer:response', function (data) {

@@ -105,6 +105,7 @@ angular.module('bounceApp')
 
     $socket.on('peer-joined', function (data) {
       if ($scope.peers.indexOf(data.alias) === -1) {
+        $scope.$broadcast('peer-connected', data.alias);
         $scope.peers.push(data.alias);
       }
 

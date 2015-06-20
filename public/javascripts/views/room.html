@@ -24,18 +24,25 @@
     <div class="chat-wrapper__messages">
       <div class="chat-wrapper__messages__lines" ng-class="{'chat-wrapper__messages__lines--private': messages.receiver}">
 
-        <div class="chat-wrapper__messages__line" ng-repeat="message in messages.room" ng-class="{'chat-wrapper__messages__line--receiver': message.alias !== alias.name, 'chat-wrapper__messages__line--self': message.alias === alias.name}" ng-if="!messages.receiver">
-          <div class="chat-wrapper__messages__line__alias">{{message.alias}}</div>
-          <div class="chat-wrapper__messages__line__timestamp" am-time-ago="message.time"></div>
-          <div class="chat-wrapper__messages__line__message" ng-bind-html="message.text" ng-if="message.type === 'text'"></div>
-          <div class="chat-wrapper__messages__line__location" ng-if="message.type === 'location'">
-            <a href="{{message.url}}" target="_blank">
-              <div class="location-preview"><i class="ion-map"></i></div>
-              <ul class="coordinates">
-                <li><strong>Latitude:</strong><span>{{message.location.lat}}</span></li>
-                <li><strong>Longitude:</strong><span>{{message.location.lng}}</span></li>
-              </ul>
-            </a>
+        <div class="chat-wrapper__messages__line" ng-repeat="message in messages.room" ng-class="{'chat-wrapper__messages__line--receiver': message.alias !== alias.name, 'chat-wrapper__messages__line--self': message.alias === alias.name, 'chat-wrapper__messages__line--info': message.type === 'info' }" ng-if="!messages.receiver">
+          <div ng-if="message.type === 'info'">
+            <span class="message" ng-bind-html="message.text"></span>
+            <span class="timestamp" am-time-ago="message.time"></span>
+          </div>
+
+          <div ng-if="message.type !== 'info'">
+            <div class="chat-wrapper__messages__line__alias">{{message.alias}}</div>
+            <div class="chat-wrapper__messages__line__timestamp" am-time-ago="message.time"></div>
+            <div class="chat-wrapper__messages__line__message" ng-bind-html="message.text" ng-if="message.type === 'text'"></div>
+            <div class="chat-wrapper__messages__line__location" ng-if="message.type === 'location'">
+              <a href="{{message.url}}" target="_blank">
+                <div class="location-preview"><i class="ion-map"></i></div>
+                <ul class="coordinates">
+                  <li><strong>Latitude:</strong><span>{{message.location.lat}}</span></li>
+                  <li><strong>Longitude:</strong><span>{{message.location.lng}}</span></li>
+                </ul>
+              </a>
+            </div>
           </div>
         </div>
 
