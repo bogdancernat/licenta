@@ -58,7 +58,7 @@ angular.module('bounceApp')
           time: (new Date).getTime()
         };
 
-        $socket.emit('new-message', socketData);
+        $socket.emit('new-message', JSON.parse(JSON.stringify(socketData)));
 
         socketData.text = parseMessage(socketData.text);
 
