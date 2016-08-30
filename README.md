@@ -2,7 +2,7 @@
 
 ###Descriere
 Aplicatie web de tip chat cu gruparea utilizatorilor in camere ce permite trimiterea mesajelor text prin websockets si apelarea audio-video a unei persoane din lista folosind WebRTC.
-###Demo: [http://pixelwav.es:8080](http://pixelwav.es:8080)
+###Demo: [https://vimeo.com/131300153](https://vimeo.com/131300153)
 ###Tehnologii si biblioteci folosite
 * Node.js (express)
 * MongoDB
