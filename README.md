@@ -25,7 +25,7 @@ Este necesara instalarea urmatoarelor pachete
 Urmatorii pasi pentru instalare sunt:
 
 - `git clone _git@github.com:bogdancernat/licenta.git`
-- `cd _folder-proiect_`
+- `cd licenta`
 - `npm install`
 - `bower install` ([http://bower.io/](http://bower.io/))
 - `cp config-example.json config.json`
